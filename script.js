@@ -1,3 +1,5 @@
+let imageReady = false;
+
 document.getElementById('upload-btn').addEventListener('click', () => {
     document.getElementById('file-input').click();
 });
@@ -8,18 +10,22 @@ document.getElementById('file-input').addEventListener('change', (event) => {
 
     const imgURL = URL.createObjectURL(file);
     const userPhoto = document.getElementById('user-photo');
-    userPhoto.crossOrigin = "anonymous";
     userPhoto.src = imgURL;
 
     userPhoto.onload = () => {
+        imageReady = true;
         document.getElementById('download-btn').disabled = false;
     };
 });
 
 document.getElementById('download-btn').addEventListener('click', async () => {
+    if (!imageReady) {
+        alert("Image non chargée !");
+        return;
+    }
+
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-
     canvas.width = 1200;
     canvas.height = 1800;
 
@@ -30,7 +36,6 @@ document.getElementById('download-btn').addEventListener('click', async () => {
     };
 
     const badgeImg = new Image();
-    badgeImg.crossOrigin = "anonymous";
     badgeImg.src = 'assets/badge.png';
 
     await new Promise(resolve => badgeImg.onload = resolve);
@@ -53,6 +58,6 @@ document.getElementById('download-btn').addEventListener('click', async () => {
 
     const link = document.createElement('a');
     link.download = 'badge_technofoire.png';
-    link.href = canvas.toDataURL();
+    link.href = canvas.toDataURL('image/png');
     link.click();
 });
