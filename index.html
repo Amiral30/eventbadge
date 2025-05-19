@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Badge Technofoire</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="badge-container">
+            <img src="assets/badge.png" alt="Badge Technofoire" id="badge-template">
+            <div class="photo-container" id="photo-container"></div>
+        </div>
+
+        <div class="controls">
+            <button id="upload-btn">Choisir une photo</button>
+            <button id="download-btn" disabled>Télécharger le badge</button>
+        </div>
+    </div>
+
+    <input type="file" id="file-input" accept="image/*" style="display:none">
+    <script src="script.js"></script>
+</body>
+</html>
