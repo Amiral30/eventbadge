@@ -69,13 +69,13 @@ body {
 }
 
 .photo-container {
-    /* ⚠️ MODIFIEZ CES VALEURS POUR LE CADRE ⚠️ */
     position: absolute;
-    top: 22%;     /* Position verticale */
-    left: 12,67%;     /* Position horizontale */
-    width: 20%;   /* Largeur du cadre */
-    height: 20%;  /* Hauteur (égale à width pour un cercle) */
-    border-radius: 50%;  /* 50% = cercle | 0 = carré */
+    top: 160px; /* Ajuste finement si besoin */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
     border: 3px solid var(--gold);
     overflow: hidden;
     cursor: grab;
@@ -163,11 +163,10 @@ body {
     .app-container {
         padding: 1.5rem;
     }
-    
+
     .photo-container {
-        width: 100px;
-        height: 100px;
-        top: 150px;
-        left: 60px;
+        width: 150px;
+        height: 150px;
+        top: 120px;
     }
 }
