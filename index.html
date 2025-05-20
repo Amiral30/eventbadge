@@ -5,27 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Badge Technofoire</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <div class="badge-container">
-            <img src="assets/unh.jpg" class="poster" alt="Affiche Technofoire">
-            <div class="photo-frame">
-                <img id="userPhoto" class="user-photo">
-                <label for="fileInput" class="upload-label">
-                    <i class="fas fa-user-edit"></i>
-                    <span>Clique pour ajouter ta photo</span>
-                </label>
+        <h1><i class="fas fa-id-badge"></i> Crée ton badge</h1>
+        
+        <div class="editor">
+            <div class="badge-preview">
+                <img src="assets/unh.jpg" id="poster" class="poster">
+                <div class="photo-spot">
+                    <img id="userPhoto" class="user-photo">
+                    <div class="upload-hint">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Importer ta photo</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="editor-controls">
+                <input type="file" id="fileInput" accept="image/*">
+                <div class="crop-container hidden" id="cropContainer"></div>
+                
+                <div class="actions">
+                    <button id="validateCrop" class="btn hidden">
+                        <i class="fas fa-check"></i> Valider
+                    </button>
+                    <button id="downloadBtn" class="btn download-btn" disabled>
+                        <i class="fas fa-download"></i> Télécharger
+                    </button>
+                </div>
             </div>
         </div>
-
-        <input type="file" id="fileInput" accept="image/*">
-        <button id="downloadBtn" class="download-btn">
-            <i class="fas fa-file-download"></i> Générer mon badge
-        </button>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js"></script>
 </body>
