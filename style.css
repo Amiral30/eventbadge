@@ -1,7 +1,7 @@
 /* ======= CONFIGURATION ======= */
 :root {
     /* TAILLE DU CERCLE PHOTO (en % du badge) */
-    --photo-size: 30%; /* ← Modifier cette valeur */
+    --photo-size: 50%; /* ← Modifier cette valeur */
 
     /* POSITION DU CERCLE (verticale en %) */
     --photo-position-y: 40%; /* ← Modifier cette valeur */
