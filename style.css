@@ -73,8 +73,8 @@ body {
     top: 160px; /* Ajuste finement si besoin */
     left: 50%;
     transform: translateX(-50%);
-    width: 220px;
-    height: 220px;
+    width: 300px;
+    height: 300px;
     border-radius: 50%;
     border: 3px solid var(--gold);
     overflow: hidden;
