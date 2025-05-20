@@ -4,26 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Générateur de Badge Technofoire</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="assets/favicon.png">
 </head>
 <body>
-    <div class="container">
-        <h1>Crée ton badge Technofoire</h1>
-        
-        <div class="badge-container">
-            <img src="assets/badge.png" alt="Badge Technofoire" id="badge-template">
-            <div class="photo-container" id="photo-container">
-                <img id="user-photo" style="display:none;">
-            </div>
-        </div>
+    <div class="app-container">
+        <header>
+            <img src="assets/logo-technofoire.png" alt="Logo Technofoire" class="logo">
+            <h1>Crée ton badge personnalisé</h1>
+            <p class="subtitle">Participe à la 1ère édition de la Technofoire</p>
+        </header>
 
-        <div class="controls">
-            <button id="upload-btn">Choisir une photo</button>
-            <button id="download-btn" disabled>Télécharger le badge</button>
-        </div>
+        <main>
+            <div class="badge-editor">
+                <div class="badge-preview">
+                    <img src="assets/badge-template.png" alt="Template de badge" id="badge-template">
+                    <div class="photo-zone" id="photo-zone">
+                        <img id="user-photo" alt="Votre photo">
+                        <div class="placeholder">+ Ajouter ta photo</div>
+                    </div>
+                </div>
+
+                <div class="editor-controls">
+                    <label for="file-input" class="upload-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        Choisir une photo
+                    </label>
+                    <input type="file" id="file-input" accept="image/*">
+                    
+                    <button id="download-btn" class="download-btn" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Télécharger le badge
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>© 2025 Technofoire - 1ère Édition</p>
+        </footer>
     </div>
 
-    <input type="file" id="file-input" accept="image/*" style="display:none">
     <script src="script.js"></script>
 </body>
 </html>
