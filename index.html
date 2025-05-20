@@ -3,37 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Badge UNH - Photo Automatique</title>
+    <title>UNH Badge Customizer | By [TonPseudo]</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <div class="badge-wrapper">
-            <div class="badge-container">
-                <img src="assets/unh.jpg" class="poster" alt="Affiche UNH">
-                <div class="photo-frame">
+    <div class="app-container">
+        <header class="app-header">
+            <h1><i class="fas fa-id-badge"></i> UNH Badge Customizer</h1>
+            <p>Importez votre photo et positionnez-la librement</p>
+        </header>
+
+        <main class="editor">
+            <div class="badge-preview">
+                <img src="assets/unh.jpg" class="base-poster" alt="Affiche UNH">
+                <div class="photo-container">
                     <img id="userPhoto" class="user-photo">
-                    <label for="fileInput" class="upload-label">
-                        <i class="fas fa-camera"></i>
-                        <span>Importer une photo</span>
+                    <label for="photoUpload" class="upload-prompt">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>Ajouter une photo</span>
                     </label>
                 </div>
             </div>
-        </div>
 
-        <input type="file" id="fileInput" accept="image/*">
-        <button id="downloadBtn" class="download-btn">
-            <i class="fas fa-download"></i> Télécharger
-        </button>
+            <div class="editor-controls">
+                <input type="file" id="photoUpload" accept="image/*">
+                <button id="downloadBtn" class="cta-button">
+                    <i class="fas fa-download"></i> Exporter en HD
+                </button>
+            </div>
+        </main>
 
-        <div class="crop-controls">
-            <button id="cropBtn"><i class="fas fa-crop"></i> Recadrer</button>
-        </div>
+        <footer class="app-footer">
+            <p>Made with ♥ by [TonPseudo]</p>
+        </footer>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
