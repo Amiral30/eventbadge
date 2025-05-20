@@ -1,43 +1,40 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Elements
-    const uploadBtn = document.getElementById('upload-btn');
     const fileInput = document.getElementById('file-input');
-    const downloadBtn = document.getElementById('download-btn');
-    const photoContainer = document.getElementById('photo-container');
+    const photoZone = document.getElementById('photo-zone');
     const userPhoto = document.getElementById('user-photo');
+    const placeholder = photoZone.querySelector('.placeholder');
+    const downloadBtn = document.getElementById('download-btn');
+    const badgeTemplate = document.getElementById('badge-template');
 
-    // Configuration du badge
-    const badgeConfig = {
-        photoPosition: {
-            x: 50, // % par rapport au badge
-            y: 30  // % par rapport au badge
-        },
-        photoSize: {
-            width: 200, // px
-            height: 200 // px
-        }
+    // Configuration
+    const config = {
+        photoSize: 200, // Taille en px
+        photoPosition: { x: 50, y: 30 } // Position en %
     };
 
     // Gestion de l'upload
-    uploadBtn.addEventListener('click', () => fileInput.click());
-
-    fileInput.addEventListener('change', (event) => {
-        const file = event.target.files[0];
+    photoZone.addEventListener('click', () => fileInput.click());
+    
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
         if (!file) return;
 
         const reader = new FileReader();
-        reader.onload = function(e) {
-            userPhoto.src = e.target.result;
+        reader.onload = function(event) {
+            userPhoto.src = event.target.result;
             userPhoto.style.display = 'block';
-            photoContainer.classList.add('has-image');
+            placeholder.style.display = 'none';
+            photoZone.style.border = '3px solid var(--primary)';
+            photoZone.style.backgroundColor = 'transparent';
             downloadBtn.disabled = false;
             
-            // Redimensionnement automatique
+            // Ajustement automatique de la photo
             userPhoto.onload = function() {
-                const containerRatio = badgeConfig.photoSize.width / badgeConfig.photoSize.height;
-                const imageRatio = userPhoto.naturalWidth / userPhoto.naturalHeight;
+                const imgRatio = userPhoto.naturalWidth / userPhoto.naturalHeight;
+                const zoneRatio = 1; // Carré
                 
-                if (imageRatio > containerRatio) {
+                if (imgRatio > zoneRatio) {
                     userPhoto.style.width = '100%';
                     userPhoto.style.height = 'auto';
                 } else {
@@ -49,62 +46,65 @@ document.addEventListener('DOMContentLoaded', function() {
         reader.readAsDataURL(file);
     });
 
-    // Téléchargement du badge
-    downloadBtn.addEventListener('click', async () => {
-        const badgeTemplate = document.getElementById('badge-template');
+    // Téléchargement
+    downloadBtn.addEventListener('click', function() {
+        if (!userPhoto.src) return;
         
         // Création du canvas
         const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Dimensions
         canvas.width = badgeTemplate.naturalWidth || badgeTemplate.width;
         canvas.height = badgeTemplate.naturalHeight || badgeTemplate.height;
-        const ctx = canvas.getContext('2d');
-
-        // Dessiner le badge
+        
+        // Dessin du badge
         ctx.drawImage(badgeTemplate, 0, 0, canvas.width, canvas.height);
-
-        // Dessiner la photo utilisateur
-        if (userPhoto.src) {
-            // Calculer la position
-            const posX = (canvas.width * badgeConfig.photoPosition.x / 100) - (badgeConfig.photoSize.width / 2);
-            const posY = (canvas.height * badgeConfig.photoPosition.y / 100) - (badgeConfig.photoSize.height / 2);
-            
-            // Créer un masque circulaire si besoin
-            ctx.save();
-            ctx.beginPath();
-            ctx.arc(
-                posX + badgeConfig.photoSize.width / 2,
-                posY + badgeConfig.photoSize.height / 2,
-                badgeConfig.photoSize.width / 2,
-                0,
-                Math.PI * 2
-            );
-            ctx.closePath();
-            ctx.clip();
-            
-            // Dessiner l'image
-            ctx.drawImage(
-                userPhoto,
-                posX,
-                posY,
-                badgeConfig.photoSize.width,
-                badgeConfig.photoSize.height
-            );
-            ctx.restore();
-        }
-
+        
+        // Position de la photo
+        const photoX = (canvas.width * config.photoPosition.x / 100) - (config.photoSize / 2);
+        const photoY = (canvas.height * config.photoPosition.y / 100) - (config.photoSize / 2);
+        
+        // Masque circulaire
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(
+            photoX + config.photoSize / 2,
+            photoY + config.photoSize / 2,
+            config.photoSize / 2,
+            0,
+            Math.PI * 2
+        );
+        ctx.closePath();
+        ctx.clip();
+        
+        // Dessin de la photo
+        ctx.drawImage(
+            userPhoto,
+            photoX,
+            photoY,
+            config.photoSize,
+            config.photoSize
+        );
+        ctx.restore();
+        
         // Téléchargement
         const link = document.createElement('a');
-        link.download = 'badge_technofoire.png';
-        link.href = canvas.toDataURL('image/png');
+        link.download = 'badge-technofoire-' + new Date().getTime() + '.png';
+        link.href = canvas.toDataURL('image/png', 1.0);
         link.click();
     });
 
     // Initialisation
-    const badgeTemplate = document.getElementById('badge-template');
     badgeTemplate.onload = function() {
-        // Ajuster dynamiquement la zone photo si besoin
-        const container = document.querySelector('.badge-container');
-        container.style.width = badgeTemplate.width + 'px';
-        container.style.height = badgeTemplate.height + 'px';
+        // Ajustement dynamique si besoin
+        const badgeWidth = badgeTemplate.width;
+        const badgeHeight = badgeTemplate.height;
+        
+        // Mise à jour de la position si nécessaire
+        config.photoPosition = { 
+            x: 50, 
+            y: Math.round((200 / badgeHeight) * 100) // Position verticale basée sur 200px du haut
+        };
     };
 });
