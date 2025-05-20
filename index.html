@@ -1,36 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Badge technofoire</title>
+    <title>Badge UNH - Customizer Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Obtenez votre badge</h1>
-        
+        <header>
+            <h1><i class="fas fa-id-badge"></i> Créez votre badge maintenant</h1>
+            <p>Importe ta photo et positionne-la sur l'affiche</p>
+        </header>
+
         <div class="badge-container">
-            <img src="assets/unh.jpg" id="poster" class="poster">
+            <img src="assets/unh.jpg" id="poster" class="poster" alt="Affiche UNH">
             <div class="overlay">
-                <img id="preview" class="user-image">
+                <img id="preview" class="user-image" alt="Votre photo">
+                <div class="upload-hint">
+                    <i class="fas fa-upload"></i>
+                    <span>Clique pour ajouter une photo</span>
+                </div>
             </div>
         </div>
-        
+
         <div class="controls">
-            <button id="uploadBtn">📁 Choisir une Photo</button>
             <input type="file" id="fileInput" accept="image/*">
             
-            <div class="edit-options">
-                <button id="cropBtn">✂️ Forme</button>
-                <button id="rotateBtn">🔄 Tourner</button>
-                <button id="filterBtn">🎨 Filtres</button>
+            <div class="button-group">
+                <button id="rotateBtn" class="btn-control" title="Rotation">
+                    <i class="fas fa-redo"></i>
+                </button>
+                <button id="filterBtn" class="btn-control" title="Filtres">
+                    <i class="fas fa-sliders-h"></i>
+                </button>
             </div>
-            
-            <button id="downloadBtn">💾 Télécharger</button>
+
+            <button id="downloadBtn" class="btn-download">
+                <i class="fas fa-download"></i> Télécharger le Badge
+            </button>
         </div>
     </div>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js"></script>
 </body>
