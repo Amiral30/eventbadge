@@ -1,28 +1,36 @@
 document.addEventListener('DOMContentLoaded', function() {
     const fileInput = document.getElementById('fileInput');
+    const uploadBtn = document.getElementById('uploadBtn');
     const preview = document.getElementById('preview');
     const downloadBtn = document.getElementById('downloadBtn');
-    const poster = document.getElementById('poster');
+    const cropBtn = document.getElementById('cropBtn');
+    const rotateBtn = document.getElementById('rotateBtn');
+    const filterBtn = document.getElementById('filterBtn');
     
     let isDragging = false;
     let offsetX, offsetY;
+    let currentRotation = 0;
+    let currentFilter = 'none';
 
-    // Upload image
+    // Upload de l'image
+    uploadBtn.addEventListener('click', () => fileInput.click());
+    
     fileInput.addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = function(event) {
                 preview.src = event.target.result;
-                // Position initiale au centre
-                preview.style.top = '50%';
-                preview.style.left = '50%';
+                preview.style.transform = 'rotate(0deg)';
+                preview.style.filter = 'none';
+                currentRotation = 0;
+                currentFilter = 'none';
             };
             reader.readAsDataURL(file);
         }
     });
 
-    // Drag and drop pour positionner l'image
+    // Drag & Drop
     preview.addEventListener('mousedown', startDrag);
     preview.addEventListener('touchstart', startDrag);
     
@@ -54,9 +62,8 @@ document.addEventListener('DOMContentLoaded', function() {
         let newLeft = clientX - containerRect.left - offsetX;
         let newTop = clientY - containerRect.top - offsetY;
         
-        // Limites pour pas sortir du cadre
-        newLeft = Math.max(0, Math.min(newLeft, containerRect.width - preview.width));
-        newTop = Math.max(0, Math.min(newTop, containerRect.height - preview.height));
+        newLeft = Math.max(0, Math.min(newLeft, containerRect.width - preview.offsetWidth));
+        newTop = Math.max(0, Math.min(newTop, containerRect.height - preview.offsetHeight));
         
         preview.style.left = newLeft + 'px';
         preview.style.top = newTop + 'px';
@@ -68,11 +75,53 @@ document.addEventListener('DOMContentLoaded', function() {
         isDragging = false;
     }
 
+    // Zoom avec molette
+    preview.addEventListener('wheel', function(e) {
+        e.preventDefault();
+        const currentWidth = parseInt(preview.style.width) || 120;
+        const newWidth = currentWidth + (e.deltaY > 0 ? -10 : 10);
+        
+        if (newWidth >= 60 && newWidth <= 200) {
+            preview.style.width = newWidth + 'px';
+            preview.style.height = newWidth + 'px';
+        }
+    });
+
+    // Rotation
+    rotateBtn.addEventListener('click', function() {
+        currentRotation += 90;
+        if (currentRotation >= 360) currentRotation = 0;
+        preview.style.transform = `rotate(${currentRotation}deg)`;
+    });
+
+    // Forme (Carré ↔ Cercle)
+    cropBtn.addEventListener('click', function() {
+        const isCircle = preview.style.borderRadius === '50%';
+        preview.style.borderRadius = isCircle ? '0' : '50%';
+    });
+
+    // Filtres
+    filterBtn.addEventListener('click', function() {
+        const filters = [
+            'none',
+            'grayscale(100%)',
+            'sepia(100%)',
+            'brightness(150%)',
+            'contrast(200%)',
+            'hue-rotate(90deg)'
+        ];
+        
+        const currentIndex = filters.indexOf(currentFilter);
+        const nextIndex = (currentIndex + 1) % filters.length;
+        currentFilter = filters[nextIndex];
+        preview.style.filter = currentFilter;
+    });
+
     // Téléchargement
     downloadBtn.addEventListener('click', function() {
         html2canvas(document.querySelector('.badge-container')).then(canvas => {
             const link = document.createElement('a');
-            link.download = 'mon-badge.png';
+            link.download = 'badge-unh-personnalise.png';
             link.href = canvas.toDataURL('image/png');
             link.click();
         });
