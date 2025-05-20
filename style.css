@@ -3,27 +3,19 @@
     --secondary: #27AE60;
     --dark: #2D3436;
     --light: #F5F6FA;
-    --accent: #E84393;
-    --radius: 12px;
-    --shadow: 0 10px 20px rgba(0,0,0,0.1);
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+    --shadow: 0 4px 20px rgba(0,0,0,0.15);
 }
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background: linear-gradient(to right, #f5f7fa, #e4e8f0);
     min-height: 100vh;
+    margin: 0;
     color: var(--dark);
-    line-height: 1.6;
 }
 
 .app-container {
-    max-width: 1200px;
+    max-width: 800px;
     margin: 0 auto;
     padding: 2rem;
     display: flex;
@@ -36,71 +28,67 @@ header {
     margin-bottom: 2rem;
 }
 
-.logo {
-    height: 80px;
-    margin-bottom: 1rem;
-}
-
 h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--dark);
+    font-size: 2.2rem;
+    color: #2c3e50;
     margin-bottom: 0.5rem;
 }
 
 .subtitle {
-    font-size: 1.2rem;
-    color: #666;
+    font-size: 1.1rem;
+    color: #7f8c8d;
+    font-style: italic;
 }
 
 .badge-editor {
     background: white;
-    border-radius: var(--radius);
+    border-radius: 15px;
     box-shadow: var(--shadow);
     padding: 2rem;
-    margin: 2rem 0;
+    margin-bottom: 2rem;
 }
 
 .badge-preview {
     position: relative;
-    max-width: 500px;
-    margin: 0 auto 2rem;
+    margin: 0 auto;
+    width: fit-content;
 }
 
 #badge-template {
-    width: 100%;
-    border-radius: var(--radius);
+    max-width: 100%;
+    height: auto;
     display: block;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-radius: 10px;
 }
 
 .photo-zone {
     position: absolute;
-    top: 30%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 200px;
-    height: 200px;
+    width: 220px;
+    height: 220px;
     border-radius: 50%;
     overflow: hidden;
-    border: 3px dashed #ccc;
-    background-color: #f8f9fa;
+    border: 3px dashed #bdc3c7;
+    background: rgba(255,255,255,0.3);
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s;
+    /* Position à ajuster selon ton badge.png */
+    top: 35%;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .photo-zone:hover {
     border-color: var(--primary);
-    background-color: #e9f5ff;
+    background: rgba(47, 128, 237, 0.1);
 }
 
-.photo-zone .placeholder {
-    text-align: center;
-    color: #666;
+.placeholder {
+    color: #7f8c8d;
     font-weight: 500;
+    text-align: center;
     padding: 1rem;
 }
 
@@ -115,6 +103,7 @@ h1 {
     display: flex;
     gap: 1rem;
     justify-content: center;
+    margin-top: 2rem;
     flex-wrap: wrap;
 }
 
@@ -122,39 +111,38 @@ h1 {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.8rem 1.5rem;
+    padding: 0.8rem 1.8rem;
     border: none;
-    border-radius: var(--radius);
+    border-radius: 8px;
     font-weight: 600;
     font-size: 1rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s;
 }
 
 .upload-btn {
-    background-color: var(--primary);
+    background: var(--primary);
     color: white;
 }
 
 .upload-btn:hover {
-    background-color: #1a73e8;
+    background: #1a73e8;
     transform: translateY(-2px);
 }
 
 .download-btn {
-    background-color: var(--secondary);
+    background: var(--secondary);
     color: white;
 }
 
 .download-btn:hover:not(:disabled) {
-    background-color: #219653;
+    background: #219653;
     transform: translateY(-2px);
 }
 
 .download-btn:disabled {
-    background-color: #95a5a6;
+    background: #95a5a6;
     cursor: not-allowed;
-    opacity: 0.7;
 }
 
 #file-input {
@@ -165,36 +153,34 @@ footer {
     margin-top: auto;
     text-align: center;
     padding: 1.5rem;
-    color: #666;
+    color: #7f8c8d;
     font-size: 0.9rem;
 }
 
+/* Responsive */
 @media (max-width: 768px) {
     .app-container {
-        padding: 1rem;
-    }
-    
-    h1 {
-        font-size: 2rem;
-    }
-    
-    .badge-editor {
         padding: 1.5rem;
     }
     
     .photo-zone {
-        width: 150px;
-        height: 150px;
+        width: 180px;
+        height: 180px;
     }
 }
 
-/* Animation */
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-.badge-preview:hover {
-    animation: pulse 2s infinite;
+@media (max-width: 480px) {
+    .photo-zone {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .editor-controls {
+        flex-direction: column;
+    }
+    
+    .upload-btn, .download-btn {
+        width: 100%;
+        justify-content: center;
+    }
 }
