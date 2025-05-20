@@ -3,25 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mon Badge</title>
+    <title>Badge technofoire</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
+        <h1>Obtenez votre badge</h1>
+        
         <div class="badge-container">
             <img src="assets/unh.jpg" id="poster" class="poster">
             <div class="overlay">
                 <img id="preview" class="user-image">
-                <input type="file" id="fileInput" accept="image/*">
             </div>
         </div>
         
         <div class="controls">
-            <button id="downloadBtn">Télécharger</button>
+            <button id="uploadBtn">📁 Choisir une Photo</button>
+            <input type="file" id="fileInput" accept="image/*">
+            
+            <div class="edit-options">
+                <button id="cropBtn">✂️ Forme</button>
+                <button id="rotateBtn">🔄 Tourner</button>
+                <button id="filterBtn">🎨 Filtres</button>
+            </div>
+            
+            <button id="downloadBtn">💾 Télécharger</button>
         </div>
     </div>
     
-    <!-- Bibliothèque pour exporter en image -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js"></script>
 </body>
