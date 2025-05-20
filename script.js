@@ -1,78 +1,103 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Éléments
-    const fileInput = document.getElementById('fileInput');
+    // Elements
+    const photoUpload = document.getElementById('photoUpload');
     const userPhoto = document.getElementById('userPhoto');
-    const uploadLabel = document.querySelector('.upload-label');
+    const uploadPrompt = document.querySelector('.upload-prompt');
     const downloadBtn = document.getElementById('downloadBtn');
-    const cropBtn = document.getElementById('cropBtn');
-    const cropControls = document.querySelector('.crop-controls');
+    const photoContainer = document.querySelector('.photo-container');
     
-    let cropper;
-    let currentImageSrc;
+    // Variables
+    let isDragging = false;
+    let startX, startY, offsetX, offsetY;
+    let scale = 1;
 
-    // Upload photo
-    fileInput.addEventListener('change', (e) => {
+    // Upload Photo
+    photoUpload.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file && file.type.match('image.*')) {
             const reader = new FileReader();
             
             reader.onload = (event) => {
-                currentImageSrc = event.target.result;
-                userPhoto.src = currentImageSrc;
+                userPhoto.src = event.target.result;
                 userPhoto.style.display = 'block';
-                uploadLabel.style.display = 'none';
+                uploadPrompt.style.display = 'none';
                 
-                // Initialise CropperJS
-                initCropper();
-                cropControls.style.display = 'block';
+                // Reset position
+                userPhoto.style.transform = 'translate(0, 0) scale(1)';
+                scale = 1;
             };
             
             reader.readAsDataURL(file);
         }
     });
 
-    // Initialisation du recadrage
-    function initCropper() {
-        if (cropper) {
-            cropper.destroy();
-        }
+    // Drag to Move
+    photoContainer.addEventListener('mousedown', startDrag);
+    photoContainer.addEventListener('touchstart', startDrag, { passive: false });
+
+    function startDrag(e) {
+        if (userPhoto.style.display !== 'block') return;
         
-        cropper = new Cropper(userPhoto, {
-            aspectRatio: 1,
-            viewMode: 1,
-            autoCropArea: 1,
-            responsive: true,
-            guides: false,
-            background: false,
-            modal: false,
-            cropBoxMovable: false,
-            cropBoxResizable: false,
-            toggleDragModeOnDblclick: false
-        });
+        isDragging = true;
+        const clientX = e.clientX || e.touches[0].clientX;
+        const clientY = e.clientY || e.touches[0].clientY;
+        
+        const rect = photoContainer.getBoundingClientRect();
+        offsetX = clientX - rect.left - (userPhoto.offsetLeft || 0);
+        offsetY = clientY - rect.top - (userPhoto.offsetTop || 0);
+        
+        e.preventDefault();
     }
 
-    // Recadrage
-    cropBtn.addEventListener('click', () => {
-        if (cropper) {
-            // Récupère la photo recadrée
-            const croppedCanvas = cropper.getCroppedCanvas({
-                width: 120,
-                height: 120,
-                fillColor: '#fff'
-            });
-            
-            userPhoto.src = croppedCanvas.toDataURL('image/png');
-            cropper.destroy();
-            cropControls.style.display = 'none';
-        }
-    });
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('touchmove', drag, { passive: false });
 
-    // Téléchargement
+    function drag(e) {
+        if (!isDragging) return;
+        
+        const clientX = e.clientX || e.touches[0].clientX;
+        const clientY = e.clientY || e.touches[0].clientY;
+        
+        const rect = photoContainer.getBoundingClientRect();
+        let newX = clientX - rect.left - offsetX;
+        let newY = clientY - rect.top - offsetY;
+        
+        userPhoto.style.left = `${newX}px`;
+        userPhoto.style.top = `${newY}px`;
+        
+        e.preventDefault();
+    }
+
+    document.addEventListener('mouseup', endDrag);
+    document.addEventListener('touchend', endDrag);
+
+    function endDrag() {
+        isDragging = false;
+    }
+
+    // Zoom with Wheel
+    photoContainer.addEventListener('wheel', (e) => {
+        if (userPhoto.style.display !== 'block') return;
+        
+        e.preventDefault();
+        const delta = e.deltaY > 0 ? -0.1 : 0.1;
+        scale = Math.max(0.5, Math.min(3, scale + delta));
+        
+        userPhoto.style.transform = `scale(${scale})`;
+    }, { passive: false });
+
+    // Download HD
     downloadBtn.addEventListener('click', async () => {
-        downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Génération...';
+        if (userPhoto.style.display !== 'block') {
+            alert('Veuillez ajouter une photo d\'abord !');
+            return;
+        }
+        
+        downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Export en cours...';
+        downloadBtn.disabled = true;
         
         try {
-            const canvas = await html2canvas(document.querySelector('.badge-container'), {
+            const canvas = await html2canvas(document.querySelector('.badge-preview'), {
                 useCORS: true,
                 scale: 2,
                 logging: false,
@@ -80,13 +105,15 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             
             const link = document.createElement('a');
-            link.download = `badge-unh-${new Date().getTime()}.png`;
+            link.download = `unh-badge-${new Date().getTime()}.png`;
             link.href = canvas.toDataURL('image/png');
             link.click();
         } catch (error) {
-            alert('Erreur lors du téléchargement : ' + error.message);
+            console.error('Erreur:', error);
+            alert('Erreur lors de l\'export : ' + error.message);
         } finally {
-            downloadBtn.innerHTML = '<i class="fas fa-download"></i> Télécharger';
+            downloadBtn.innerHTML = '<i class="fas fa-download"></i> Exporter en HD';
+            downloadBtn.disabled = false;
         }
     });
 });
