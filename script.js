@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ======= CONFIGURATION =======
     const config = {
         // TAILLE (doit correspondre au CSS)
-        photoSizeRatio: 0.3, // ← Même valeur que --photo-size (0.3 = 30%)
+        photoSizeRatio: 0.5, // ← Même valeur que --photo-size (0.3 = 30%)
         
         // POSITION (doit correspondre au CSS)
         photoPosition: {
