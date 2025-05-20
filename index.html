@@ -1,26 +1,27 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Générateur de Badge Technofoire</title>
+    <title>Mon Badge</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <div class="badge-container">
-            <img src="assets/badge.png" alt="Badge Technofoire" id="badge-template">
-            <div class="photo-container" id="photo-container"></div>
+            <img src="ton-affiche.jpg" id="poster" class="poster">
+            <div class="overlay">
+                <img id="preview" class="user-image">
+                <input type="file" id="fileInput" accept="image/*">
+            </div>
         </div>
-
+        
         <div class="controls">
-            <button id="upload-btn">Choisir une photo</button>
-            <button id="download-btn" disabled>Télécharger le badge</button>
+            <button id="downloadBtn">Télécharger</button>
         </div>
     </div>
-
-    <input type="file" id="file-input" accept="image/*" style="display:none">
-    <img id="user-photo" style="display: none;" />
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
