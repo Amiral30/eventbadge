@@ -4,29 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Badge Technofoire</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <div class="editor">
-            <!-- Affiche originale avec zone cliquable -->
-            <div class="affiche-container">
-                <img src="assets/unh.jpg" id="baseAffiche" class="base-affiche">
-                <div id="photoZone" class="photo-zone"></div>
+        <div class="badge-container">
+            <img src="assets/unh.jpg" class="poster">
+            <div class="photo-spot">
+                <img id="userPhoto" class="user-photo">
                 <input type="file" id="fileInput" accept="image/*">
             </div>
-
-            <!-- Contrôles -->
-            <div class="controls">
-                <button id="downloadBtn" class="btn">
-                    <i class="fas fa-download"></i> Télécharger
-                </button>
-            </div>
         </div>
+        <button id="downloadBtn">Télécharger</button>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
