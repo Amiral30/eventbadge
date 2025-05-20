@@ -2,48 +2,38 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mon Badge</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Badge UNH - Photo Automatique</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1><i class="fas fa-id-badge"></i> Créez votre badge maintenant</h1>
-            <p>Importe votre photo et positionnez-la sur l'affiche</p>
-        </header>
-
-        <div class="badge-container">
-            <img src="assets/unh.jpg" id="poster" class="poster" alt="Affiche UNH">
-            <div class="overlay">
-                <img id="preview" class="user-image" alt="Votre photo">
-                <div class="upload-hint">
-                    <i class="fas fa-upload"></i>
-                    <span>Cliquez pour ajouter une photo</span>
+        <div class="badge-wrapper">
+            <div class="badge-container">
+                <img src="assets/unh.jpg" class="poster" alt="Affiche UNH">
+                <div class="photo-frame">
+                    <img id="userPhoto" class="user-photo">
+                    <label for="fileInput" class="upload-label">
+                        <i class="fas fa-camera"></i>
+                        <span>Importer une photo</span>
+                    </label>
                 </div>
             </div>
         </div>
 
-        <div class="controls">
-            <input type="file" id="fileInput" accept="image/*">
-            
-            <div class="button-group">
-                <button id="rotateBtn" class="btn-control" title="Rotation">
-                    <i class="fas fa-redo"></i>
-                </button>
-                <button id="filterBtn" class="btn-control" title="Filtres">
-                    <i class="fas fa-sliders-h"></i>
-                </button>
-            </div>
+        <input type="file" id="fileInput" accept="image/*">
+        <button id="downloadBtn" class="download-btn">
+            <i class="fas fa-download"></i> Télécharger
+        </button>
 
-            <button id="downloadBtn" class="btn-download">
-                <i class="fas fa-download">Télécharger votre Badge</i> 
-            </button>
+        <div class="crop-controls">
+            <button id="cropBtn"><i class="fas fa-crop"></i> Recadrer</button>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
