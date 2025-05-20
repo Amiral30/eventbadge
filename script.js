@@ -1,79 +1,80 @@
-const uploadBtn = document.getElementById('upload-btn');
-const fileInput = document.getElementById('file-input');
-const downloadBtn = document.getElementById('download-btn');
-const userPhoto = document.getElementById('user-photo');
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('fileInput');
+    const preview = document.getElementById('preview');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const poster = document.getElementById('poster');
+    
+    let isDragging = false;
+    let offsetX, offsetY;
 
-let imageReady = false;
+    // Upload image
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                preview.src = event.target.result;
+                // Position initiale au centre
+                preview.style.top = '50%';
+                preview.style.left = '50%';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 
-// Bouton "Choisir une photo"
-uploadBtn.addEventListener('click', () => {
-    fileInput.click();
-});
+    // Drag and drop pour positionner l'image
+    preview.addEventListener('mousedown', startDrag);
+    preview.addEventListener('touchstart', startDrag);
+    
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('touchmove', drag);
+    
+    document.addEventListener('mouseup', endDrag);
+    document.addEventListener('touchend', endDrag);
 
-// Quand une photo est sélectionnée
-fileInput.addEventListener('change', (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const imgURL = URL.createObjectURL(file);
-    userPhoto.src = imgURL;
-
-    userPhoto.onload = () => {
-        imageReady = true;
-        downloadBtn.disabled = false;
-    };
-});
-
-// Bouton "Télécharger le badge"
-downloadBtn.addEventListener('click', async () => {
-    if (!imageReady) {
-        alert("Veuillez d'abord choisir une photo.");
-        return;
+    function startDrag(e) {
+        isDragging = true;
+        const clientX = e.clientX || e.touches[0].clientX;
+        const clientY = e.clientY || e.touches[0].clientY;
+        
+        const rect = preview.getBoundingClientRect();
+        offsetX = clientX - rect.left;
+        offsetY = clientY - rect.top;
+        
+        e.preventDefault();
     }
 
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
+    function drag(e) {
+        if (!isDragging) return;
+        
+        const clientX = e.clientX || e.touches[0].clientX;
+        const clientY = e.clientY || e.touches[0].clientY;
+        
+        const containerRect = document.querySelector('.badge-container').getBoundingClientRect();
+        let newLeft = clientX - containerRect.left - offsetX;
+        let newTop = clientY - containerRect.top - offsetY;
+        
+        // Limites pour pas sortir du cadre
+        newLeft = Math.max(0, Math.min(newLeft, containerRect.width - preview.width));
+        newTop = Math.max(0, Math.min(newTop, containerRect.height - preview.height));
+        
+        preview.style.left = newLeft + 'px';
+        preview.style.top = newTop + 'px';
+        
+        e.preventDefault();
+    }
 
-    // Dimensions du badge
-    canvas.width = 1200;
-    canvas.height = 1800;
+    function endDrag() {
+        isDragging = false;
+    }
 
-    // Position du cercle
-    const circle = {
-        x: canvas.width / 2,
-        y: canvas.height * 0.26,
-        radius: 191
-    };
-
-    // Charger l'image du badge
-    const badgeImg = new Image();
-    badgeImg.src = 'assets/badge.png';
-
-    await new Promise(resolve => badgeImg.onload = resolve);
-
-    // Dessiner le badge en arrière-plan
-    ctx.drawImage(badgeImg, 0, 0, canvas.width, canvas.height);
-
-    // Masquer en cercle
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2);
-    ctx.clip();
-
-    // Dessiner la photo de l'utilisateur
-    ctx.drawImage(
-        userPhoto,
-        circle.x - circle.radius,
-        circle.y - circle.radius,
-        circle.radius * 2,
-        circle.radius * 2
-    );
-
-    ctx.restore();
-
-    // Générer et déclencher le téléchargement
-    const link = document.createElement('a');
-    link.download = 'badge_technofoire.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+    // Téléchargement
+    downloadBtn.addEventListener('click', function() {
+        html2canvas(document.querySelector('.badge-container')).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'mon-badge.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+    });
 });
