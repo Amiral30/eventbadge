@@ -36,10 +36,10 @@ body {
 .photo-frame {
     /* POSITIONNEMENT EXACT SUR LE CADRE PRÉVU */
     position: absolute;
-    top: 182px;
+    top: 160px;
     left: 74px;
-    width: 152px;
-    height: 152px;
+    width: 50%;
+    height: 50%;
     border-radius: 50%;
     overflow: hidden;
     cursor: pointer;
