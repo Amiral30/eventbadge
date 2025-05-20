@@ -2,14 +2,14 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mon Badge</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <div class="badge-container">
-            <img src="ton-affiche.jpg" id="poster" class="poster">
+            <img src="assets/unh.jpg" id="poster" class="poster">
             <div class="overlay">
                 <img id="preview" class="user-image">
                 <input type="file" id="fileInput" accept="image/*">
@@ -21,6 +21,7 @@
         </div>
     </div>
     
+    <!-- Bibliothèque pour exporter en image -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js"></script>
 </body>
