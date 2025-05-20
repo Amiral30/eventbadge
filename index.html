@@ -3,40 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Créateur de Badge | By Amira3.0</title>
+    <title>Badge Technofoire</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="app-container">
-        <header class="app-header">
-            <h1><i class="fas fa-id-badge"></i>Obtenez votre Badge </h1>
-            <p>Importez et recadrez votre photo</p>
-        </header>
-
-        <main class="editor">
-            <div class="badge-preview">
-                <img src="assets/unh.jpg" class="base-poster" alt="Affiche UNH">
-                <div class="photo-container">
-                    <img id="userPhoto" class="user-photo">
-                    <label for="photoUpload" class="upload-prompt">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <span>Ajouter une photo</span>
-                    </label>
-                </div>
+    <div class="container">
+        <div class="badge-container">
+            <img src="assets/unh.jpg" class="poster" alt="Affiche Technofoire">
+            <div class="photo-frame">
+                <img id="userPhoto" class="user-photo">
+                <label for="fileInput" class="upload-label">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Ajoute ta photo</span>
+                </label>
             </div>
+        </div>
 
-            <div class="editor-controls">
-                <input type="file" id="photoUpload" accept="image/*">
-                <button id="downloadBtn" class="cta-button">
-                    <i class="fas fa-download"></i> Exporter en HD
-                </button>
-            </div>
-        </main>
-
-        <footer class="app-footer">
-            <p>Made by Amiral 3.0 </p>
-        </footer>
+        <input type="file" id="fileInput" accept="image/*">
+        <button id="downloadBtn" class="download-btn">
+            <i class="fas fa-download"></i> Télécharger ton badge
+        </button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
