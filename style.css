@@ -72,9 +72,9 @@ body {
     /* ⚠️ MODIFIEZ CES VALEURS POUR LE CADRE ⚠️ */
     position: absolute;
     top: 180px;     /* Position verticale */
-    left: 80px;     /* Position horizontale */
+    left: 180px;     /* Position horizontale */
     width: 500px;   /* Largeur du cadre */
-    height: 390px;  /* Hauteur (égale à width pour un cercle) */
+    height: 500px;  /* Hauteur (égale à width pour un cercle) */
     border-radius: 50%;  /* 50% = cercle | 0 = carré */
     border: 3px solid var(--gold);
     overflow: hidden;
