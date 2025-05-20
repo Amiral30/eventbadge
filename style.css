@@ -1,13 +1,13 @@
 :root {
-    --gold: #FFD700;
-    --primary: #FF5722;
+    --text-color: #333333;
+    --highlight: #FFD700;
 }
 
 body {
     margin: 0;
     padding: 20px;
-    font-family: 'Segoe UI', sans-serif;
-    background: #f0f0f0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #f5f5f5;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -16,7 +16,7 @@ body {
 
 .container {
     text-align: center;
-    max-width: 500px;
+    max-width: 100%;
 }
 
 .badge-container {
@@ -24,9 +24,7 @@ body {
     width: 300px;
     height: 450px;
     margin: 0 auto 30px;
-    border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
 .poster {
@@ -36,17 +34,15 @@ body {
 }
 
 .photo-frame {
-    /* POSITIONNEMENT SUR LE TEXTE "Jy serai..." */
+    /* POSITIONNEMENT EXACT SUR LE CADRE PRÉVU */
     position: absolute;
-    top: 280px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 150px;
-    height: 150px;
+    top: 182px;
+    left: 74px;
+    width: 152px;
+    height: 152px;
     border-radius: 50%;
-    border: 3px solid var(--gold);
     overflow: hidden;
-    background: rgba(0,0,0,0.1);
+    cursor: pointer;
 }
 
 .user-photo {
@@ -66,41 +62,59 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: white;
-    background: rgba(0,0,0,0.5);
-    cursor: pointer;
+    background: rgba(255, 255, 255, 0.7);
+    color: var(--text-color);
+    font-size: 0.9rem;
+    text-align: center;
     transition: all 0.3s;
 }
 
 .upload-label:hover {
-    background: rgba(0,0,0,0.7);
+    background: rgba(255, 255, 255, 0.9);
 }
 
 .upload-label i {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
-    color: var(--gold);
+    font-size: 2rem;
+    margin-bottom: 8px;
+    color: var(--text-color);
 }
 
 .download-btn {
-    background: var(--primary);
+    background: linear-gradient(135deg, #FF5722, #E64A19);
     color: white;
     border: none;
-    padding: 12px 25px;
-    border-radius: 8px;
+    padding: 12px 24px;
+    border-radius: 30px;
     font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 10px;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: all 0.3s;
 }
 
 .download-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(255,87,34,0.4);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.download-btn:active {
+    transform: translateY(1px);
 }
 
 #fileInput {
     display: none;
+}
+
+/* Animation de chargement */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.badge-container {
+    animation: fadeIn 0.5s ease-out;
 }
