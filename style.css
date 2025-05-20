@@ -1,63 +1,85 @@
 :root {
     --primary: #FF5722;
+    --secondary: #2196F3;
     --dark: #1E1E1E;
     --light: #FFFFFF;
     --gold: #FFD700;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Reset & Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-    font-family: 'Segoe UI', sans-serif;
-    background: #f5f5f5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #f8f8f8;
     color: var(--dark);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
 }
 
-.container {
+.app-container {
     width: 100%;
     max-width: 500px;
+    margin: auto;
     padding: 2rem;
+}
+
+/* Header */
+.app-header {
     text-align: center;
+    margin-bottom: 2rem;
 }
 
-.badge-wrapper {
-    position: relative;
-    margin: 0 auto 2rem;
-    width: 300px;
-    height: 450px;
+.app-header h1 {
+    font-size: 1.8rem;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
-.badge-container {
+.app-header p {
+    color: #666;
+    font-size: 0.95rem;
+}
+
+/* Editor */
+.badge-preview {
     position: relative;
     width: 100%;
-    height: 100%;
-    border-radius: 12px;
+    aspect-ratio: 2/3;
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
 }
 
-.poster {
+.base-poster {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.photo-frame {
+.photo-container {
+    /* ⚠️ MODIFIEZ CES VALEURS POUR LE CADRE ⚠️ */
     position: absolute;
-    top: 180px; /* Position fixe */
-    left: 80px; /* Position fixe */
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
+    top: 180px;     /* Position verticale */
+    left: 80px;     /* Position horizontale */
+    width: 120px;   /* Largeur du cadre */
+    height: 120px;  /* Hauteur (égale à width pour un cercle) */
+    border-radius: 50%;  /* 50% = cercle | 0 = carré */
     border: 3px solid var(--gold);
     overflow: hidden;
-    background: rgba(0, 0, 0, 0.3);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    cursor: grab;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
 }
 
 .user-photo {
@@ -65,72 +87,87 @@ body {
     height: 100%;
     object-fit: cover;
     display: none;
+    position: relative;
+    transition: transform 0.2s;
 }
 
-.upload-label {
+.user-photo:active {
+    cursor: grabbing;
+}
+
+.upload-prompt {
+    position: absolute;
+    inset: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.4);
     color: white;
-    cursor: pointer;
-    padding: 1rem;
-    text-align: center;
+    transition: background 0.3s;
 }
 
-.upload-label i {
+.upload-prompt:hover {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.upload-prompt i {
     font-size: 2rem;
     margin-bottom: 0.5rem;
-    color: var(--gold);
 }
 
-.upload-label span {
-    font-size: 0.9rem;
+/* Controls */
+.editor-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
-.download-btn {
+#photoUpload {
+    display: none;
+}
+
+.cta-button {
     background: var(--primary);
     color: white;
     border: none;
     padding: 12px 24px;
     border-radius: 8px;
     font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
-    margin-top: 1rem;
-    transition: all 0.3s;
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s;
+    box-shadow: 0 2px 10px rgba(255, 87, 34, 0.3);
 }
 
-.download-btn:hover {
+.cta-button:hover {
     background: #E64A19;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 87, 34, 0.3);
+    box-shadow: 0 4px 15px rgba(255, 87, 34, 0.4);
 }
 
-.crop-controls {
-    margin-top: 1rem;
-    display: none; /* Visible seulement après upload */
+/* Footer */
+.app-footer {
+    text-align: center;
+    margin-top: 2rem;
+    color: #888;
+    font-size: 0.9rem;
 }
 
-#cropBtn {
-    background: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-#fileInput {
-    display: none;
-}
-
-/* CropperJS Override */
-.cropper-view-box {
-    border-radius: 50%;
-}
-
-.cropper-modal {
-    background: rgba(0, 0, 0, 0.8);
+/* Responsive */
+@media (max-width: 600px) {
+    .app-container {
+        padding: 1.5rem;
+    }
+    
+    .photo-container {
+        width: 100px;
+        height: 100px;
+        top: 150px;
+        left: 60px;
+    }
 }
