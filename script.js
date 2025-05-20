@@ -2,42 +2,37 @@ document.addEventListener('DOMContentLoaded', () => {
     // Éléments
     const fileInput = document.getElementById('fileInput');
     const userPhoto = document.getElementById('userPhoto');
-    const uploadLabel = document.querySelector('.upload-label');
+    const uploadHint = document.querySelector('.upload-hint');
     const downloadBtn = document.getElementById('downloadBtn');
-    const photoFrame = document.querySelector('.photo-frame');
+    const photoSpot = document.querySelector('.photo-spot');
+    const cropContainer = document.getElementById('cropContainer');
+    const validateCropBtn = document.getElementById('validateCrop');
+    
+    let cropper;
 
-    // Optimisation du redimensionnement
-    function fitImageToFrame() {
-        const imgRatio = userPhoto.naturalWidth / userPhoto.naturalHeight;
-        const frameRatio = photoFrame.offsetWidth / photoFrame.offsetHeight;
-
-        if (imgRatio > frameRatio) {
-            userPhoto.style.width = '100%';
-            userPhoto.style.height = 'auto';
-        } else {
-            userPhoto.style.width = 'auto';
-            userPhoto.style.height = '100%';
-        }
-
-        // Centrage absolu
-        userPhoto.style.position = 'absolute';
-        userPhoto.style.top = '50%';
-        userPhoto.style.left = '50%';
-        userPhoto.style.transform = 'translate(-50%, -50%)';
-    }
-
-    // Gestion de l'upload
+    // Upload photo
     fileInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file && file.type.match('image.*')) {
             const reader = new FileReader();
             
             reader.onload = (event) => {
-                userPhoto.src = event.target.result;
-                userPhoto.onload = () => {
-                    fitImageToFrame();
-                    userPhoto.style.display = 'block';
-                    uploadLabel.style.display = 'none';
+                // Préparation du recadrage
+                cropContainer.innerHTML = `<img id="cropImage" src="${event.target.result}">`;
+                cropContainer.classList.remove('hidden');
+                validateCropBtn.classList.remove('hidden');
+                downloadBtn.disabled = true;
+                
+                // Initialisation de CropperJS
+                const image = document.getElementById('cropImage');
+                image.onload = () => {
+                    cropper = new Cropper(image, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                        autoCropArea: 0.8,
+                        responsive: true,
+                        guides: false
+                    });
                 };
             };
             
@@ -45,13 +40,37 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Téléchargement HD
+    // Validation du recadrage
+    validateCropBtn.addEventListener('click', () => {
+        if (cropper) {
+            // Récupération de la photo recadrée
+            const canvas = cropper.getCroppedCanvas({
+                width: 300,
+                height: 300,
+                minWidth: 150,
+                minHeight: 150
+            });
+            
+            userPhoto.src = canvas.toDataURL('image/jpeg', 0.9);
+            userPhoto.style.display = 'block';
+            uploadHint.style.display = 'none';
+            
+            // Reset UI
+            cropContainer.classList.add('hidden');
+            validateCropBtn.classList.add('hidden');
+            downloadBtn.disabled = false;
+            
+            // Destruction de Cropper
+            cropper.destroy();
+        }
+    });
+
+    // Téléchargement
     downloadBtn.addEventListener('click', async () => {
-        downloadBtn.disabled = true;
-        downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Création en cours...';
+        downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Génération...';
         
         try {
-            const canvas = await html2canvas(document.querySelector('.badge-container'), {
+            const canvas = await html2canvas(document.querySelector('.badge-preview'), {
                 useCORS: true,
                 scale: 2,
                 logging: false,
@@ -61,21 +80,18 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const link = document.createElement('a');
             link.download = `badge-technofoire-${Date.now()}.png`;
-            link.href = canvas.toDataURL('image/png', 1.0);
+            link.href = canvas.toDataURL('image/png');
             link.click();
         } catch (error) {
-            console.error("Erreur de génération :", error);
-            alert("Une erreur est survenue lors de la génération du badge");
+            console.error("Erreur :", error);
+            alert("Erreur lors de la génération");
         } finally {
-            setTimeout(() => {
-                downloadBtn.innerHTML = '<i class="fas fa-file-download"></i> Télécharger à nouveau';
-                downloadBtn.disabled = false;
-            }, 2000);
+            downloadBtn.innerHTML = '<i class="fas fa-download"></i> Télécharger';
         }
     });
 
-    // Clic sur le cadre pour upload
-    photoFrame.addEventListener('click', () => {
+    // Clic sur la zone photo
+    photoSpot.addEventListener('click', () => {
         fileInput.click();
     });
 });
