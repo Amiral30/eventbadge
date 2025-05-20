@@ -1,51 +1,56 @@
+/* ======= CONFIGURATION ======= */
 :root {
-    --primary: #2F80ED;
-    --secondary: #27AE60;
-    --dark: #2D3436;
-    --light: #F5F6FA;
-    --shadow: 0 4px 20px rgba(0,0,0,0.15);
+    /* TAILLE DU CERCLE PHOTO (en % du badge) */
+    --photo-size: 30%; /* ← Modifier cette valeur */
+
+    /* POSITION DU CERCLE (verticale en %) */
+    --photo-position-y: 40%; /* ← Modifier cette valeur */
+
+    /* STYLE */
+    --primary-color: #2F80ED;
+    --secondary-color: #27AE60;
+}
+
+/* ======= STYLES DE BASE ======= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(to right, #f5f7fa, #e4e8f0);
+    background: #f5f7fa;
     min-height: 100vh;
-    margin: 0;
-    color: var(--dark);
+    padding: 20px;
 }
 
 .app-container {
     max-width: 800px;
     margin: 0 auto;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
 }
 
 header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 30px;
 }
 
 h1 {
     font-size: 2.2rem;
     color: #2c3e50;
-    margin-bottom: 0.5rem;
 }
 
 .subtitle {
-    font-size: 1.1rem;
     color: #7f8c8d;
     font-style: italic;
 }
 
+/* ======= ZONE BADGE ======= */
 .badge-editor {
     background: white;
     border-radius: 15px;
-    box-shadow: var(--shadow);
-    padding: 2rem;
-    margin-bottom: 2rem;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
 .badge-preview {
@@ -62,82 +67,79 @@ h1 {
 }
 
 .photo-zone {
+    /* Configuration */
+    width: var(--photo-size);
+    height: 0;
+    padding-bottom: var(--photo-size);
+    top: var(--photo-position-y);
+
+    /* Positionnement */
     position: absolute;
-    width: 220px;
-    height: 220px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 3px dashed #bdc3c7;
-    background: rgba(255,255,255,0.3);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: all 0.3s;
-    /* Position à ajuster selon ton badge.png */
-    top: 35%;
     left: 50%;
     transform: translateX(-50%);
+    overflow: hidden;
+    border-radius: 50%;
+
+    /* Style */
+    border: 3px dashed #bdc3c7;
+    background: rgba(255,255,255,0.3);
+    cursor: pointer;
+    transition: all 0.3s;
 }
 
 .photo-zone:hover {
-    border-color: var(--primary);
+    border-color: var(--primary-color);
     background: rgba(47, 128, 237, 0.1);
 }
 
-.placeholder {
-    color: #7f8c8d;
-    font-weight: 500;
-    text-align: center;
-    padding: 1rem;
-}
-
 #user-photo {
+    position: absolute;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    top: 0;
+    left: 0;
     display: none;
 }
 
+.placeholder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #7f8c8d;
+    font-weight: 500;
+    text-align: center;
+    width: 100%;
+}
+
+/* ======= BOUTONS ======= */
 .editor-controls {
     display: flex;
-    gap: 1rem;
+    gap: 15px;
     justify-content: center;
-    margin-top: 2rem;
+    margin-top: 30px;
     flex-wrap: wrap;
 }
 
 .upload-btn, .download-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.8rem 1.8rem;
+    padding: 12px 25px;
     border: none;
     border-radius: 8px;
     font-weight: 600;
-    font-size: 1rem;
     cursor: pointer;
     transition: all 0.3s;
+    font-size: 1rem;
 }
 
 .upload-btn {
-    background: var(--primary);
+    background: var(--primary-color);
     color: white;
-}
-
-.upload-btn:hover {
-    background: #1a73e8;
-    transform: translateY(-2px);
 }
 
 .download-btn {
-    background: var(--secondary);
+    background: var(--secondary-color);
     color: white;
-}
-
-.download-btn:hover:not(:disabled) {
-    background: #219653;
-    transform: translateY(-2px);
 }
 
 .download-btn:disabled {
@@ -149,30 +151,10 @@ h1 {
     display: none;
 }
 
-footer {
-    margin-top: auto;
-    text-align: center;
-    padding: 1.5rem;
-    color: #7f8c8d;
-    font-size: 0.9rem;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .app-container {
-        padding: 1.5rem;
-    }
-    
+/* ======= RESPONSIVE ======= */
+@media (max-width: 600px) {
     .photo-zone {
-        width: 180px;
-        height: 180px;
-    }
-}
-
-@media (max-width: 480px) {
-    .photo-zone {
-        width: 150px;
-        height: 150px;
+        --photo-size: 35%; /* Taille augmentée sur mobile */
     }
     
     .editor-controls {
@@ -181,6 +163,5 @@ footer {
     
     .upload-btn, .download-btn {
         width: 100%;
-        justify-content: center;
     }
 }
