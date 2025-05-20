@@ -1,29 +1,44 @@
+/* Reset & Base */
 body {
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
+    background: #111;
+    color: white;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: #f5f5f5;
 }
 
 .container {
     text-align: center;
     width: 100%;
     max-width: 500px;
+    padding: 20px;
 }
 
+h1 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: gold;
+}
+
+/* Badge Container */
 .badge-container {
     position: relative;
-    margin: 20px auto;
+    margin: 0 auto 20px;
+    width: 300px;
+    height: 450px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
 }
 
 .poster {
     width: 100%;
-    height: auto;
-    display: block;
+    height: 100%;
+    object-fit: cover;
 }
 
 .overlay {
@@ -36,40 +51,83 @@ body {
 
 .user-image {
     position: absolute;
-    /* Positionne ta photo où tu veux sur l'affiche */
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 150px;
-    height: 150px;
+    top: 180px;
+    left: 80px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid white;
-    cursor: move;
+    border: 3px solid gold;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+    cursor: grab;
+    transition: all 0.3s;
 }
 
+.user-image:active {
+    cursor: grabbing;
+}
+
+/* Contrôles */
 .controls {
-    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 button {
-    padding: 10px 20px;
-    background: #4CAF50;
-    color: white;
+    padding: 12px;
     border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    border-radius: 8px;
     font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.3s;
 }
 
 button:hover {
-    background: #45a049;
+    transform: scale(1.05);
 }
 
-/* Pour mobile */
+#uploadBtn {
+    background: #4CAF50;
+    color: white;
+}
+
+#downloadBtn {
+    background: #2196F3;
+    color: white;
+}
+
+.edit-options {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+#cropBtn, #rotateBtn, #filterBtn {
+    background: #FF9800;
+    color: black;
+    flex: 1;
+}
+
+#fileInput {
+    display: none;
+}
+
+/* Mobile */
 @media (max-width: 600px) {
+    .badge-container {
+        width: 90vw;
+        height: 135vw;
+    }
+    
     .user-image {
-        width: 120px;
-        height: 120px;
+        width: 25vw;
+        height: 25vw;
+        top: 45vw;
+        left: 15vw;
+    }
+    
+    .edit-options {
+        flex-wrap: wrap;
     }
 }
