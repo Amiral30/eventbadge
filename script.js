@@ -1,76 +1,50 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Éléments
     const fileInput = document.getElementById('fileInput');
-    const userPhoto = document.getElementById('userPhoto');
-    const uploadHint = document.querySelector('.upload-hint');
+    const photoZone = document.getElementById('photoZone');
     const downloadBtn = document.getElementById('downloadBtn');
-    const photoSpot = document.querySelector('.photo-spot');
-    const cropContainer = document.getElementById('cropContainer');
-    const validateCropBtn = document.getElementById('validateCrop');
-    
-    let cropper;
+    const baseAffiche = document.getElementById('baseAffiche');
 
-    // Upload photo
+    // Variables
+    let userPhoto = null;
+
+    // Gestion de l'upload
+    photoZone.addEventListener('click', () => fileInput.click());
+    
     fileInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file && file.type.match('image.*')) {
             const reader = new FileReader();
             
             reader.onload = (event) => {
-                // Préparation du recadrage
-                cropContainer.innerHTML = `<img id="cropImage" src="${event.target.result}">`;
-                cropContainer.classList.remove('hidden');
-                validateCropBtn.classList.remove('hidden');
-                downloadBtn.disabled = true;
+                // Création de l'image utilisateur
+                if (userPhoto) userPhoto.remove();
                 
-                // Initialisation de CropperJS
-                const image = document.getElementById('cropImage');
-                image.onload = () => {
-                    cropper = new Cropper(image, {
-                        aspectRatio: 1,
-                        viewMode: 1,
-                        autoCropArea: 0.8,
-                        responsive: true,
-                        guides: false
-                    });
-                };
+                userPhoto = document.createElement('img');
+                userPhoto.src = event.target.result;
+                userPhoto.style.objectFit = 'cover';
+                userPhoto.style.width = '100%';
+                userPhoto.style.height = '100%';
+                
+                photoZone.appendChild(userPhoto);
+                photoZone.classList.add('has-photo');
             };
             
             reader.readAsDataURL(file);
         }
     });
 
-    // Validation du recadrage
-    validateCropBtn.addEventListener('click', () => {
-        if (cropper) {
-            // Récupération de la photo recadrée
-            const canvas = cropper.getCroppedCanvas({
-                width: 300,
-                height: 300,
-                minWidth: 150,
-                minHeight: 150
-            });
-            
-            userPhoto.src = canvas.toDataURL('image/jpeg', 0.9);
-            userPhoto.style.display = 'block';
-            uploadHint.style.display = 'none';
-            
-            // Reset UI
-            cropContainer.classList.add('hidden');
-            validateCropBtn.classList.add('hidden');
-            downloadBtn.disabled = false;
-            
-            // Destruction de Cropper
-            cropper.destroy();
-        }
-    });
-
     // Téléchargement
     downloadBtn.addEventListener('click', async () => {
+        if (!userPhoto) {
+            alert("Ajoute d'abord une photo !");
+            return;
+        }
+
         downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Génération...';
         
         try {
-            const canvas = await html2canvas(document.querySelector('.badge-preview'), {
+            const canvas = await html2canvas(document.querySelector('.affiche-container'), {
                 useCORS: true,
                 scale: 2,
                 logging: false,
@@ -79,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             
             const link = document.createElement('a');
-            link.download = `badge-technofoire-${Date.now()}.png`;
+            link.download = `mon-badge-technofoire-${Date.now()}.png`;
             link.href = canvas.toDataURL('image/png');
             link.click();
         } catch (error) {
@@ -88,10 +62,5 @@ document.addEventListener('DOMContentLoaded', () => {
         } finally {
             downloadBtn.innerHTML = '<i class="fas fa-download"></i> Télécharger';
         }
-    });
-
-    // Clic sur la zone photo
-    photoSpot.addEventListener('click', () => {
-        fileInput.click();
     });
 });
