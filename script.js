@@ -1,30 +1,41 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
+    // Éléments DOM
     const fileInput = document.getElementById('fileInput');
-    const uploadBtn = document.getElementById('uploadBtn');
     const preview = document.getElementById('preview');
     const downloadBtn = document.getElementById('downloadBtn');
-    const cropBtn = document.getElementById('cropBtn');
     const rotateBtn = document.getElementById('rotateBtn');
     const filterBtn = document.getElementById('filterBtn');
-    
+    const overlay = document.querySelector('.overlay');
+
+    // Variables d'état
     let isDragging = false;
-    let offsetX, offsetY;
+    let startX, startY, offsetX, offsetY;
     let currentRotation = 0;
     let currentFilter = 'none';
+    const filters = [
+        'none',
+        'grayscale(100%)',
+        'sepia(100%)',
+        'brightness(120%) contrast(120%)',
+        'hue-rotate(90deg)',
+        'saturate(200%)'
+    ];
 
-    // Upload de l'image
-    uploadBtn.addEventListener('click', () => fileInput.click());
-    
-    fileInput.addEventListener('change', function(e) {
+    // Gestion de l'upload
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay || e.target.classList.contains('upload-hint')) {
+            fileInput.click();
+        }
+    });
+
+    fileInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
-        if (file) {
+        if (file && file.type.match('image.*')) {
             const reader = new FileReader();
-            reader.onload = function(event) {
+            reader.onload = (event) => {
                 preview.src = event.target.result;
-                preview.style.transform = 'rotate(0deg)';
-                preview.style.filter = 'none';
-                currentRotation = 0;
-                currentFilter = 'none';
+                preview.style.display = 'block';
+                overlay.querySelector('.upload-hint').style.display = 'none';
             };
             reader.readAsDataURL(file);
         }
@@ -32,13 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Drag & Drop
     preview.addEventListener('mousedown', startDrag);
-    preview.addEventListener('touchstart', startDrag);
-    
-    document.addEventListener('mousemove', drag);
-    document.addEventListener('touchmove', drag);
-    
-    document.addEventListener('mouseup', endDrag);
-    document.addEventListener('touchend', endDrag);
+    preview.addEventListener('touchstart', startDrag, { passive: false });
 
     function startDrag(e) {
         isDragging = true;
@@ -52,6 +57,9 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
     }
 
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('touchmove', drag, { passive: false });
+
     function drag(e) {
         if (!isDragging) return;
         
@@ -62,55 +70,41 @@ document.addEventListener('DOMContentLoaded', function() {
         let newLeft = clientX - containerRect.left - offsetX;
         let newTop = clientY - containerRect.top - offsetY;
         
+        // Contraintes de position
         newLeft = Math.max(0, Math.min(newLeft, containerRect.width - preview.offsetWidth));
         newTop = Math.max(0, Math.min(newTop, containerRect.height - preview.offsetHeight));
         
-        preview.style.left = newLeft + 'px';
-        preview.style.top = newTop + 'px';
+        preview.style.left = `${newLeft}px`;
+        preview.style.top = `${newTop}px`;
         
         e.preventDefault();
     }
+
+    document.addEventListener('mouseup', endDrag);
+    document.addEventListener('touchend', endDrag);
 
     function endDrag() {
         isDragging = false;
     }
 
     // Zoom avec molette
-    preview.addEventListener('wheel', function(e) {
+    preview.addEventListener('wheel', (e) => {
         e.preventDefault();
-        const currentWidth = parseInt(preview.style.width) || 120;
-        const newWidth = currentWidth + (e.deltaY > 0 ? -10 : 10);
+        const currentSize = parseInt(preview.style.width) || 120;
+        const newSize = Math.max(60, Math.min(200, currentSize + (e.deltaY > 0 ? -10 : 10)));
         
-        if (newWidth >= 60 && newWidth <= 200) {
-            preview.style.width = newWidth + 'px';
-            preview.style.height = newWidth + 'px';
-        }
-    });
+        preview.style.width = `${newSize}px`;
+        preview.style.height = `${newSize}px`;
+    }, { passive: false });
 
     // Rotation
-    rotateBtn.addEventListener('click', function() {
-        currentRotation += 90;
-        if (currentRotation >= 360) currentRotation = 0;
+    rotateBtn.addEventListener('click', () => {
+        currentRotation = (currentRotation + 90) % 360;
         preview.style.transform = `rotate(${currentRotation}deg)`;
     });
 
-    // Forme (Carré ↔ Cercle)
-    cropBtn.addEventListener('click', function() {
-        const isCircle = preview.style.borderRadius === '50%';
-        preview.style.borderRadius = isCircle ? '0' : '50%';
-    });
-
     // Filtres
-    filterBtn.addEventListener('click', function() {
-        const filters = [
-            'none',
-            'grayscale(100%)',
-            'sepia(100%)',
-            'brightness(150%)',
-            'contrast(200%)',
-            'hue-rotate(90deg)'
-        ];
-        
+    filterBtn.addEventListener('click', () => {
         const currentIndex = filters.indexOf(currentFilter);
         const nextIndex = (currentIndex + 1) % filters.length;
         currentFilter = filters[nextIndex];
@@ -118,12 +112,26 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Téléchargement
-    downloadBtn.addEventListener('click', function() {
-        html2canvas(document.querySelector('.badge-container')).then(canvas => {
+    downloadBtn.addEventListener('click', async () => {
+        downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Génération...';
+        
+        try {
+            const canvas = await html2canvas(document.querySelector('.badge-container'), {
+                useCORS: true,
+                scale: 2, // Qualité HD
+                logging: false,
+                backgroundColor: null
+            });
+            
             const link = document.createElement('a');
-            link.download = 'badge-unh-personnalise.png';
+            link.download = `badge-unh-${new Date().getTime()}.png`;
             link.href = canvas.toDataURL('image/png');
             link.click();
-        });
+        } catch (error) {
+            console.error('Erreur lors du téléchargement:', error);
+            alert('Une erreur est survenue lors du téléchargement.');
+        } finally {
+            downloadBtn.innerHTML = '<i class="fas fa-download"></i> Télécharger le Badge';
+        }
     });
 });
