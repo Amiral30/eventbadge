@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // POSITION (doit correspondre au CSS)
         photoPosition: {
             x: 50,  // Ne pas changer (centrage horizontal)
-            y: 50   // ← Même valeur que --photo-position-y
+            y: 100   // ← Même valeur que --photo-position-y
         }
     };
 
