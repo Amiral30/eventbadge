@@ -71,10 +71,10 @@ body {
 .photo-container {
     /* ⚠️ MODIFIEZ CES VALEURS POUR LE CADRE ⚠️ */
     position: absolute;
-    top: 180px;     /* Position verticale */
-    left: 300px;     /* Position horizontale */
-    width: 50%;   /* Largeur du cadre */
-    height: 50%;  /* Hauteur (égale à width pour un cercle) */
+    top: 22%;     /* Position verticale */
+    left: 12,67%;     /* Position horizontale */
+    width: 20%;   /* Largeur du cadre */
+    height: 20%;  /* Hauteur (égale à width pour un cercle) */
     border-radius: 50%;  /* 50% = cercle | 0 = carré */
     border: 3px solid var(--gold);
     overflow: hidden;
