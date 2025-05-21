@@ -1,98 +1,128 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+const upload = document.getElementById("upload");
+const download = document.getElementById("download");
+
 const bg = new Image();
 bg.src = "affiche.jpg";
 
-bg.onload = () => drawCanvas();
+// Position et taille de la zone circulaire
+const circle = {
+  x: 800, // position X du centre
+  y: 190, // position Y du centre
+  r: 120  // rayon du cercle
+};
 
+let uploadedImg = null;
+let imgX = circle.x - circle.r;
+let imgY = circle.y - circle.r;
+let imgW = circle.r * 2;
+let imgH = circle.r * 2;
+let dragging = false;
+let resizing = false;
+let offsetX, offsetY;
+
+// Dessiner la scène complète
 function drawCanvas() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
 
-  // Cercle d'indication
+  // Cercle rouge transparent
   ctx.beginPath();
-  ctx.arc(585, 215, 125, 0, Math.PI * 2);
-  ctx.fillStyle = "rgba(200,200,200,0.2)";
+  ctx.arc(circle.x, circle.y, circle.r, 0, Math.PI * 2);
+  ctx.fillStyle = "rgba(255, 0, 0, 0.2)";
   ctx.fill();
-  ctx.lineWidth = 4;
-  ctx.strokeStyle = "white";
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = "red";
   ctx.stroke();
+  ctx.closePath();
+
+  if (uploadedImg) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(circle.x, circle.y, circle.r, 0, Math.PI * 2);
+    ctx.clip();
+    ctx.drawImage(uploadedImg, imgX, imgY, imgW, imgH);
+    ctx.restore();
+
+    // Cadre de redimensionnement
+    ctx.strokeStyle = "blue";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(imgX, imgY, imgW, imgH);
+  }
 }
 
-// Gestion image importée
-document.getElementById("upload").addEventListener("change", function (e) {
+// Image de fond chargée
+bg.onload = () => drawCanvas();
+
+// Upload de l'image utilisateur
+upload.addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
   const reader = new FileReader();
-  reader.onload = function (event) {
-    const img = document.getElementById("uploaded-photo");
-    img.src = event.target.result;
-    img.onload = () => {
-      document.getElementById("photo-container").style.display = "block";
-    };
+  reader.onload = (event) => {
+    uploadedImg = new Image();
+    uploadedImg.onload = () => drawCanvas();
+    uploadedImg.src = event.target.result;
   };
-  reader.readAsDataURL(e.target.files[0]);
+  reader.readAsDataURL(file);
 });
 
-// Rendre déplaçable et redimensionnable
-interact("#photo-container")
-  .draggable({
-    listeners: {
-      move(event) {
-        const target = event.target;
-        const x = (parseFloat(target.getAttribute("data-x")) || 0) + event.dx;
-        const y = (parseFloat(target.getAttribute("data-y")) || 0) + event.dy;
+// Mouvements souris/tactile
+canvas.addEventListener("mousedown", startDrag);
+canvas.addEventListener("touchstart", startDrag, { passive: false });
 
-        target.style.transform = translate(${x}px, ${y}px);
-        target.setAttribute("data-x", x);
-        target.setAttribute("data-y", y);
-      }
-    }
-  })
-  .resizable({
-    edges: { left: false, right: true, bottom: true, top: false },
-    modifiers: [
-      interact.modifiers.aspectRatio({ ratio: 1 }),
-      interact.modifiers.restrictSize({ max: 300, min: 100 })
-    ],
-    listeners: {
-      move(event) {
-        let { width, height } = event.rect;
-        const target = event.target;
-        target.style.width = ${width}px;
-        target.style.height = ${height}px;
+canvas.addEventListener("mousemove", onDrag);
+canvas.addEventListener("touchmove", onDrag, { passive: false });
 
-        const x = (parseFloat(target.getAttribute("data-x")) || 0) + event.deltaRect.left;
-        const y = (parseFloat(target.getAttribute("data-y")) || 0) + event.deltaRect.top;
+canvas.addEventListener("mouseup", endDrag);
+canvas.addEventListener("touchend", endDrag);
 
-        target.style.transform = translate(${x}px, ${y}px);
-        target.setAttribute("data-x", x);
-        target.setAttribute("data-y", y);
-      }
-    }
-  });
+function getPos(e) {
+  if (e.touches) {
+    return { x: e.touches[0].clientX - canvas.getBoundingClientRect().left, y: e.touches[0].clientY - canvas.getBoundingClientRect().top };
+  } else {
+    return { x: e.offsetX, y: e.offsetY };
+  }
+}
 
-// Générer et télécharger badge
-document.getElementById("download").addEventListener("click", () => {
+function startDrag(e) {
+  e.preventDefault();
+  const pos = getPos(e);
+  if (pos.x > imgX + imgW - 20 && pos.y > imgY + imgH - 20) {
+    resizing = true;
+  } else if (pos.x > imgX && pos.x < imgX + imgW && pos.y > imgY && pos.y < imgY + imgH) {
+    dragging = true;
+    offsetX = pos.x - imgX;
+    offsetY = pos.y - imgY;
+  }
+}
+
+function onDrag(e) {
+  if (!dragging && !resizing || !uploadedImg) return;
+
+  e.preventDefault();
+  const pos = getPos(e);
+  if (dragging) {
+    imgX = pos.x - offsetX;
+    imgY = pos.y - offsetY;
+  } else if (resizing) {
+    imgW = pos.x - imgX;
+    imgH = pos.y - imgY;
+  }
   drawCanvas();
+}
 
-  const photoContainer = document.getElementById("photo-container");
-  const img = document.getElementById("uploaded-photo");
+function endDrag() {
+  dragging = false;
+  resizing = false;
+}
 
-  const containerRect = photoContainer.getBoundingClientRect();
-  const canvasRect = canvas.getBoundingClientRect();
-  const x = containerRect.left - canvasRect.left;
-  const y = containerRect.top - canvasRect.top;
-  const width = containerRect.width;
-  const height = containerRect.height;
-
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(x + width / 2, y + height / 2, width / 2, 0, Math.PI * 2);
-  ctx.clip();
-  ctx.drawImage(img, x, y, width, height);
-  ctx.restore();
-
-  const link = document.createElement("a");
-  link.download = "badge.png";
-  link.href = canvas.toDataURL();
-  link.click();
+// Télécharger le résultat
+download.addEventListener("click", () => {
+  const a = document.createElement("a");
+  a.download = "badge.png";
+  a.href = canvas.toDataURL("image/png");
+  a.click();
 });
