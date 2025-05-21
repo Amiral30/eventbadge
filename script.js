@@ -1,98 +1,100 @@
-const canvas = document.getElementById("canvas");
+const canvas = document.getElementById("badgeCanvas");
 const ctx = canvas.getContext("2d");
-const upload = document.getElementById("upload");
-const download = document.getElementById("download");
 
-const bg = new Image();
-bg.src = "affiche.jpg";
+const fileInput = document.getElementById("fileInput");
+const downloadBtn = document.getElementById("downloadBtn");
 
-// Position et taille de la zone circulaire
+const background = new Image();
+background.src = "affiche.jpg";
+
 const circle = {
-  x: 800, // position X du centre
-  y: 190, // position Y du centre
-  r: 120  // rayon du cercle
+  x: 614,
+  y: 300,
+  r: 300
 };
 
 let uploadedImg = null;
-let imgX = circle.x - circle.r;
-let imgY = circle.y - circle.r;
-let imgW = circle.r * 2;
-let imgH = circle.r * 2;
-let dragging = false;
-let resizing = false;
-let offsetX, offsetY;
+let imgX = 0, imgY = 0, imgW = 0, imgH = 0;
+let dragging = false, resizing = false;
+let offsetX = 0, offsetY = 0;
+let imgNaturalWidth = 0, imgNaturalHeight = 0;
 
-// Dessiner la scène complète
+background.onload = drawCanvas;
+
 function drawCanvas() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
+  ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
-  // Cercle rouge transparent
+  ctx.save();
   ctx.beginPath();
-  ctx.arc(circle.x, circle.y, circle.r, 0, Math.PI * 2);
-  ctx.fillStyle = "rgba(255, 0, 0, 0.2)";
-  ctx.fill();
-  ctx.lineWidth = 3;
-  ctx.strokeStyle = "red";
-  ctx.stroke();
-  ctx.closePath();
+  ctx.arc(circle.x, circle.y, circle.r, 0, 2 * Math.PI);
+  ctx.clip();
 
   if (uploadedImg) {
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(circle.x, circle.y, circle.r, 0, Math.PI * 2);
-    ctx.clip();
     ctx.drawImage(uploadedImg, imgX, imgY, imgW, imgH);
-    ctx.restore();
-
-    // Cadre de redimensionnement
-    ctx.strokeStyle = "blue";
-    ctx.lineWidth = 2;
-    ctx.strokeRect(imgX, imgY, imgW, imgH);
   }
+  ctx.restore();
+
+  ctx.beginPath();
+  ctx.arc(circle.x, circle.y, circle.r, 0, 2 * Math.PI);
+  ctx.strokeStyle = "rgba(255, 0, 0, 0.8)";
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  ctx.fillStyle = "rgba(255, 0, 0, 0.1)";
+  ctx.fill();
 }
 
-// Image de fond chargée
-bg.onload = () => drawCanvas();
-
-// Upload de l'image utilisateur
-upload.addEventListener("change", (e) => {
+fileInput.addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) return;
 
   const reader = new FileReader();
-  reader.onload = (event) => {
+  reader.onload = () => {
     uploadedImg = new Image();
-    uploadedImg.onload = () => drawCanvas();
-    uploadedImg.src = event.target.result;
+    uploadedImg.onload = () => {
+      imgNaturalWidth = uploadedImg.naturalWidth;
+      imgNaturalHeight = uploadedImg.naturalHeight;
+      const ratio = imgNaturalWidth / imgNaturalHeight;
+      imgW = circle.r * 2;
+      imgH = imgW / ratio;
+      imgX = circle.x - imgW / 2;
+      imgY = circle.y - imgH / 2;
+      drawCanvas();
+    };
+    uploadedImg.src = reader.result;
   };
   reader.readAsDataURL(file);
 });
 
-// Mouvements souris/tactile
 canvas.addEventListener("mousedown", startDrag);
-canvas.addEventListener("touchstart", startDrag, { passive: false });
-
 canvas.addEventListener("mousemove", onDrag);
-canvas.addEventListener("touchmove", onDrag, { passive: false });
-
 canvas.addEventListener("mouseup", endDrag);
+canvas.addEventListener("touchstart", startDrag, { passive: false });
+canvas.addEventListener("touchmove", onDrag, { passive: false });
 canvas.addEventListener("touchend", endDrag);
 
 function getPos(e) {
   if (e.touches) {
-    return { x: e.touches[0].clientX - canvas.getBoundingClientRect().left, y: e.touches[0].clientY - canvas.getBoundingClientRect().top };
+    return {
+      x: e.touches[0].clientX - canvas.getBoundingClientRect().left,
+      y: e.touches[0].clientY - canvas.getBoundingClientRect().top
+    };
   } else {
-    return { x: e.offsetX, y: e.offsetY };
+    return {
+      x: e.offsetX,
+      y: e.offsetY
+    };
   }
 }
 
 function startDrag(e) {
   e.preventDefault();
   const pos = getPos(e);
-  if (pos.x > imgX + imgW - 20 && pos.y > imgY + imgH - 20) {
-    resizing = true;
-  } else if (pos.x > imgX && pos.x < imgX + imgW && pos.y > imgY && pos.y < imgY + imgH) {
+  if (
+    pos.x >= imgX && pos.x <= imgX + imgW &&
+    pos.y >= imgY && pos.y <= imgY + imgH
+  ) {
     dragging = true;
     offsetX = pos.x - imgX;
     offsetY = pos.y - imgY;
@@ -100,29 +102,21 @@ function startDrag(e) {
 }
 
 function onDrag(e) {
-  if (!dragging && !resizing || !uploadedImg) return;
-
+  if (!dragging) return;
   e.preventDefault();
   const pos = getPos(e);
-  if (dragging) {
-    imgX = pos.x - offsetX;
-    imgY = pos.y - offsetY;
-  } else if (resizing) {
-    imgW = pos.x - imgX;
-    imgH = pos.y - imgY;
-  }
+  imgX = pos.x - offsetX;
+  imgY = pos.y - offsetY;
   drawCanvas();
 }
 
 function endDrag() {
   dragging = false;
-  resizing = false;
 }
 
-// Télécharger le résultat
-download.addEventListener("click", () => {
-  const a = document.createElement("a");
-  a.download = "badge.png";
-  a.href = canvas.toDataURL("image/png");
-  a.click();
+downloadBtn.addEventListener("click", () => {
+  const link = document.createElement("a");
+  link.download = "badge.png";
+  link.href = canvas.toDataURL("image/png");
+  link.click();
 });
