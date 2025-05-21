@@ -1,81 +1,54 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const fileInput = document.getElementById('file-input');
-    const uploadBtn = document.getElementById('upload-btn');
-    const downloadBtn = document.getElementById('download-btn');
-    const userPhoto = document.getElementById('user-photo');
-    const photoZone = document.getElementById('photo-zone');
-    const badgeTemplate = document.getElementById('badge-template');
+let canvas = document.getElementById('badgeCanvas');
+let ctx = canvas.getContext('2d');
+let image = new Image();
+image.src = 'badge-background.jpg';
 
-    // Configuration précise
-    const PHOTO_ZONE = {
-        x: 72,    // Position X en px
-        y: 210,   // Position Y en px
-        width: 320, // Largeur en px
-        height: 240 // Hauteur en px
+let uploadedPhoto = null;
+let photoX = 500, photoY = 150;
+let photoSize = 220;
+
+image.onload = () => {
+    drawCanvas();
+};
+
+function drawCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+    if (uploadedPhoto) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(photoX + photoSize / 2, photoY + photoSize / 2, photoSize / 2, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.clip();
+        ctx.drawImage(uploadedPhoto, photoX, photoY, photoSize, photoSize);
+        ctx.restore();
+
+        ctx.beginPath();
+        ctx.arc(photoX + photoSize / 2, photoY + photoSize / 2, photoSize / 2 + 2, 0, Math.PI * 2);
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 4;
+        ctx.stroke();
+    }
+}
+
+document.getElementById('photoUpload').addEventListener('change', (e) => {
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+        uploadedPhoto = new Image();
+        uploadedPhoto.onload = drawCanvas;
+        uploadedPhoto.src = evt.target.result;
     };
+    reader.readAsDataURL(e.target.files[0]);
+});
 
-    // Upload photo
-    uploadBtn.addEventListener('click', () => fileInput.click());
-    
-    fileInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
+document.getElementById('downloadBtn').addEventListener('click', () => {
+    const link = document.createElement('a');
+    link.download = 'badge-technofoire.png';
+    link.href = canvas.toDataURL();
+    link.click();
+});
 
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            userPhoto.src = event.target.result;
-            userPhoto.style.display = 'block';
-            photoZone.querySelector('.placeholder').style.display = 'none';
-            downloadBtn.disabled = false;
-        };
-        reader.readAsDataURL(file);
-    });
-
-    // Téléchargement
-    downloadBtn.addEventListener('click', function() {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        // Dimensions canvas = dimensions affiche
-        canvas.width = 800;
-        canvas.height = 1200;
-        
-        // Dessin de l'affiche
-        const bgImg = new Image();
-        bgImg.src = 'assets/1000489890.jpg';
-        bgImg.onload = function() {
-            ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
-            
-            // Dessin de la photo utilisateur
-            if (userPhoto.src) {
-                ctx.save();
-                
-                // Créer un masque pour la zone exacte
-                ctx.beginPath();
-                ctx.rect(
-                    PHOTO_ZONE.x,
-                    PHOTO_ZONE.y,
-                    PHOTO_ZONE.width,
-                    PHOTO_ZONE.height
-                );
-                ctx.clip();
-                
-                ctx.drawImage(
-                    userPhoto,
-                    PHOTO_ZONE.x,
-                    PHOTO_ZONE.y,
-                    PHOTO_ZONE.width,
-                    PHOTO_ZONE.height
-                );
-                
-                ctx.restore();
-            }
-            
-            // Téléchargement
-            const link = document.createElement('a');
-            link.download = 'badge-technofoire.png';
-            link.href = canvas.toDataURL('image/png', 1.0);
-            link.click();
-        };
-    });
+document.getElementById('resetBtn').addEventListener('click', () => {
+    uploadedPhoto = null;
+    drawCanvas();
 });
