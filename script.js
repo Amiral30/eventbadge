@@ -8,7 +8,7 @@ const photo = {
   img: null,
   x: 815, // Position du centre du cercle
   y: 275,
-  scale: 5,
+  scale: 2,
   offsetX: 0,
   offsetY: 0,
   dragging: false,
@@ -16,7 +16,7 @@ const photo = {
   lastY: 0,
 };
 
-const radius = 140;
+const radius = 200;
 
 bg.onload = () => draw();
 
@@ -29,7 +29,7 @@ document.getElementById("upload").addEventListener("change", (e) => {
     const img = new Image();
     img.onload = () => {
       photo.img = img;
-      photo.scale = 5;
+      photo.scale = 2;
       photo.offsetX = 0;
       photo.offsetY = 0;
       draw();
