@@ -8,7 +8,7 @@ const photo = {
   img: null,
   x: 815, // Position du centre du cercle
   y: 275,
-  scale: 1,
+  scale: 5,
   offsetX: 0,
   offsetY: 0,
   dragging: false,
