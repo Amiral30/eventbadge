@@ -1,34 +1,31 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Générateur de Badge</title>
-  <link rel="stylesheet" href="style.css"/>
-  <link rel="stylesheet" href="https://unpkg.com/cropperjs/dist/cropper.min.css"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Badge Technofoire</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <div class="badge">
-      <img src="affiche.png" alt="Affiche" class="affiche" />
-      <div class="photo-zone">
-        <img id="user-photo" src="" alt="" />
-      </div>
+    <div class="container">
+        <h1>Crée ton badge Technofoire</h1>
+        
+        <div class="badge-editor">
+            <div class="badge-preview">
+                <img src="assets/1000489808.png" alt="Affiche Technofoire" id="badge-template">
+                <div class="photo-zone" id="photo-zone" style="clip-path: ellipse(40% 50%)">
+                    <img id="user-photo" alt="Photo utilisateur">
+                </div>
+            </div>
+
+            <div class="controls">
+                <button id="upload-btn">Choisir une photo</button>
+                <button id="download-btn" disabled>Télécharger</button>
+                <input type="file" id="file-input" accept="image/*">
+            </div>
+        </div>
     </div>
 
-    <input type="file" id="upload" accept="image/*" />
-    
-    <div id="crop-area">
-      <img id="cropper-image" />
-      <button id="confirm-crop">Valider la photo</button>
-    </div>
-
-    <button id="download">Télécharger</button>
-    <canvas id="final-canvas" style="display: none;"></canvas>
-  </div>
-
-  <script src="https://unpkg.com/cropperjs"></script>
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
