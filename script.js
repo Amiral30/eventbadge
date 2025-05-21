@@ -1,111 +1,96 @@
-const canvas = document.getElementById("badgeCanvas");
+const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-
 const bg = new Image();
 bg.src = "affiche.jpg";
 
-const photo = {
-  img: null,
-  x: 800, // Position du centre du cercle
-  y: 450,
-  scale: 1,
-  offsetX: 0,
-  offsetY: 0,
-  dragging: false,
-  lastX: 0,
-  lastY: 0,
-};
+bg.onload = () => drawCanvas();
 
-const radius = 350;
-
-bg.onload = () => draw();
-
-document.getElementById("upload").addEventListener("change", (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = (evt) => {
-    const img = new Image();
-    img.onload = () => {
-      photo.img = img;
-      photo.scale = 2;
-      photo.offsetX = 0;
-      photo.offsetY = 0;
-      draw();
-    };
-    img.src = evt.target.result;
-  };
-  reader.readAsDataURL(file);
-});
-
-function draw() {
+function drawCanvas() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
 
-  // Fond transparent dans le cercle
+  // Cercle d'indication
   ctx.beginPath();
-  ctx.arc(photo.x, photo.y, radius, 0, Math.PI * 2);
-  ctx.fillStyle = "rgba(200, 200, 200, 0.3)";
+  ctx.arc(585, 215, 125, 0, Math.PI * 2);
+  ctx.fillStyle = "rgba(200,200,200,0.2)";
   ctx.fill();
-
-  if (photo.img) {
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(photo.x, photo.y, radius, 0, Math.PI * 2);
-    ctx.clip();
-
-    const size = radius * 2 * photo.scale;
-    ctx.drawImage(
-      photo.img,
-      photo.x - radius + photo.offsetX,
-      photo.y - radius + photo.offsetY,
-      size,
-      size
-    );
-    ctx.restore();
-  }
-
-  // Contour blanc
-  ctx.beginPath();
-  ctx.arc(photo.x, photo.y, radius + 2, 0, Math.PI * 2);
-  ctx.strokeStyle = "#fff";
   ctx.lineWidth = 4;
+  ctx.strokeStyle = "white";
   ctx.stroke();
 }
 
-canvas.addEventListener("mousedown", (e) => {
-  photo.dragging = true;
-  photo.lastX = e.offsetX;
-  photo.lastY = e.offsetY;
+// Gestion image importée
+document.getElementById("upload").addEventListener("change", function (e) {
+  const reader = new FileReader();
+  reader.onload = function (event) {
+    const img = document.getElementById("uploaded-photo");
+    img.src = event.target.result;
+    img.onload = () => {
+      document.getElementById("photo-container").style.display = "block";
+    };
+  };
+  reader.readAsDataURL(e.target.files[0]);
 });
 
-canvas.addEventListener("mouseup", () => {
-  photo.dragging = false;
-});
+// Rendre déplaçable et redimensionnable
+interact("#photo-container")
+  .draggable({
+    listeners: {
+      move(event) {
+        const target = event.target;
+        const x = (parseFloat(target.getAttribute("data-x")) || 0) + event.dx;
+        const y = (parseFloat(target.getAttribute("data-y")) || 0) + event.dy;
 
-canvas.addEventListener("mousemove", (e) => {
-  if (photo.dragging && photo.img) {
-    const dx = e.offsetX - photo.lastX;
-    const dy = e.offsetY - photo.lastY;
-    photo.offsetX += dx;
-    photo.offsetY += dy;
-    photo.lastX = e.offsetX;
-    photo.lastY = e.offsetY;
-    draw();
-  }
-});
+        target.style.transform = translate(${x}px, ${y}px);
+        target.setAttribute("data-x", x);
+        target.setAttribute("data-y", y);
+      }
+    }
+  })
+  .resizable({
+    edges: { left: false, right: true, bottom: true, top: false },
+    modifiers: [
+      interact.modifiers.aspectRatio({ ratio: 1 }),
+      interact.modifiers.restrictSize({ max: 300, min: 100 })
+    ],
+    listeners: {
+      move(event) {
+        let { width, height } = event.rect;
+        const target = event.target;
+        target.style.width = ${width}px;
+        target.style.height = ${height}px;
 
-canvas.addEventListener("wheel", (e) => {
-  if (photo.img) {
-    e.preventDefault();
-    photo.scale += e.deltaY * -0.001;
-    photo.scale = Math.min(Math.max(0.5, photo.scale), 3); // Limites du zoom
-    draw();
-  }
-});
+        const x = (parseFloat(target.getAttribute("data-x")) || 0) + event.deltaRect.left;
+        const y = (parseFloat(target.getAttribute("data-y")) || 0) + event.deltaRect.top;
 
+        target.style.transform = translate(${x}px, ${y}px);
+        target.setAttribute("data-x", x);
+        target.setAttribute("data-y", y);
+      }
+    }
+  });
+
+// Générer et télécharger badge
 document.getElementById("download").addEventListener("click", () => {
+  drawCanvas();
+
+  const photoContainer = document.getElementById("photo-container");
+  const img = document.getElementById("uploaded-photo");
+
+  const containerRect = photoContainer.getBoundingClientRect();
+  const canvasRect = canvas.getBoundingClientRect();
+  const x = containerRect.left - canvasRect.left;
+  const y = containerRect.top - canvasRect.top;
+  const width = containerRect.width;
+  const height = containerRect.height;
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(x + width / 2, y + height / 2, width / 2, 0, Math.PI * 2);
+  ctx.clip();
+  ctx.drawImage(img, x, y, width, height);
+  ctx.restore();
+
   const link = document.createElement("a");
   link.download = "badge.png";
   link.href = canvas.toDataURL();
