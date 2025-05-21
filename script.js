@@ -9,8 +9,8 @@ background.src = "affiche.jpg";
 
 const circle = {
   x: 614,
-  y: 300,
-  r: 300
+  y: 500,
+  r: 250
 };
 
 let uploadedImg = null;
