@@ -1,22 +1,18 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Générateur de Badge - Techno Foire</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Générateur de Badge</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div id="app">
-        <div class="canvas-container">
-            <canvas id="badgeCanvas" width="768" height="768"></canvas>
-            <input type="file" id="photoUpload" accept="image/*">
-        </div>
-        <div class="controls">
-            <button id="resetBtn">Réinitialiser</button>
-            <button id="downloadBtn">Télécharger le badge</button>
-        </div>
-    </div>
-    <script src="script.js"></script>
+  <div class="container">
+    <canvas id="badgeCanvas" width="1080" height="1080"></canvas>
+    <input type="file" id="upload" accept="image/*" />
+    <button id="download">Télécharger</button>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
