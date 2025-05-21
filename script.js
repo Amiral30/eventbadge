@@ -29,7 +29,7 @@ document.getElementById("upload").addEventListener("change", (e) => {
     const img = new Image();
     img.onload = () => {
       photo.img = img;
-      photo.scale = 1;
+      photo.scale = 5;
       photo.offsetX = 0;
       photo.offsetY = 0;
       draw();
