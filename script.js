@@ -5,7 +5,7 @@ const resetBtn = document.getElementById('reset');
 const downloadBtn = document.getElementById('download');
 
 const bg = new Image();
-bg.src = 'badge-background.jpg'; // Mets ici le nom exact de ton image de fond
+bg.src = 'techno-affiche.png'; // Mets ici le nom exact de ton image de fond
 
 let userImg = null;
 let userImgX = 700, userImgY = 200, userImgR = 160;
