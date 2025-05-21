@@ -2,17 +2,23 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Générateur de Badge</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <canvas id="badgeCanvas" width="1080" height="1080"></canvas>
+    <canvas id="canvas" width="1080" height="720"></canvas>
+
+    <div id="photo-container">
+      <img id="uploaded-photo" src="" alt="photo" />
+    </div>
+
     <input type="file" id="upload" accept="image/*" />
-    <button id="download">Télécharger</button>
+    <button id="download">Télécharger le badge</button>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
