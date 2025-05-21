@@ -6,8 +6,8 @@ bg.src = "affiche.jpg";
 
 const photo = {
   img: null,
-  x: 815, // Position du centre du cercle
-  y: 400,
+  x: 800, // Position du centre du cercle
+  y: 450,
   scale: 1,
   offsetX: 0,
   offsetY: 0,
@@ -16,7 +16,7 @@ const photo = {
   lastY: 0,
 };
 
-const radius = 300;
+const radius = 350;
 
 bg.onload = () => draw();
 
