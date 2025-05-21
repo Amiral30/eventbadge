@@ -1,46 +1,49 @@
 body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #6e00ff, #00d4ff);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4f4f4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 1rem;
 }
 
-#app {
-    text-align: center;
+.container {
+  width: 100%;
+  max-width: 400px;
 }
 
-.canvas-container {
-    position: relative;
-}
-
-#badgeCanvas {
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-}
-
-#photoUpload {
-    margin-top: 15px;
+canvas {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .controls {
-    margin-top: 10px;
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
 }
 
-button {
-    margin: 5px;
-    padding: 10px 20px;
-    border: none;
-    background: #fff;
-    color: #333;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
+.controls input[type="file"],
+.controls button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-button:hover {
-    background: #f0f0f0;
+.controls button {
+  background-color: #008CBA;
+  color: white;
+}
+
+.controls button:hover {
+  background-color: #006f94;
 }
