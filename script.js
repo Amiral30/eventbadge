@@ -43,6 +43,12 @@ function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
 
+  // Fond transparent dans le cercle
+  ctx.beginPath();
+  ctx.arc(photo.x, photo.y, radius, 0, Math.PI * 2);
+  ctx.fillStyle = "rgba(200, 200, 200, 0.3)";
+  ctx.fill();
+
   if (photo.img) {
     ctx.save();
     ctx.beginPath();
@@ -58,14 +64,14 @@ function draw() {
       size
     );
     ctx.restore();
-
-    // Contour
-    ctx.beginPath();
-    ctx.arc(photo.x, photo.y, radius + 2, 0, Math.PI * 2);
-    ctx.strokeStyle = "#fff";
-    ctx.lineWidth = 4;
-    ctx.stroke();
   }
+
+  // Contour blanc
+  ctx.beginPath();
+  ctx.arc(photo.x, photo.y, radius + 2, 0, Math.PI * 2);
+  ctx.strokeStyle = "#fff";
+  ctx.lineWidth = 4;
+  ctx.stroke();
 }
 
 canvas.addEventListener("mousedown", (e) => {
