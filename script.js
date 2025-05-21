@@ -15,11 +15,11 @@ document.addEventListener('DOMContentLoaded', function() {
         size: { width: 35, height: 25 },
         
         // Forme : 'circle', 'ellipse', 'rectangle', 'polygon'
-        shape: 'ellipse',
+        shape: 'rectangle',
         
         // Paramètres spécifiques à la forme
         shapeParams: {
-            ellipse: { rx: 40, ry: 50 } // % pour clip-path
+            rectangle: { rx: 40, ry: 50 } // % pour clip-path
         }
     };
 
