@@ -22,7 +22,7 @@ body {
 }
 
 .badge-template {
-    background: url('assets/1000489890.jpg') no-repeat;
+    background: url('affiche.png') no-repeat;
     width: 800px; /* Dimensions de ton affiche */
     height: 1200px;
     background-size: contain;
