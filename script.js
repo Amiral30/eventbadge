@@ -7,7 +7,7 @@ bg.src = "affiche.jpg";
 const photo = {
   img: null,
   x: 815, // Position du centre du cercle
-  y: 100,
+  y: 400,
   scale: 1,
   offsetX: 0,
   offsetY: 0,
