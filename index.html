@@ -1,41 +1,34 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Badge Technofoire</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Générateur de Badge</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/cropperjs/dist/cropper.min.css"/>
 </head>
 <body>
-    <div class="app-container">
-        <header>
-            <h1>Technofoire 1ère Édition</h1>
-            <p class="subtitle">"Jy serai..."</p>
-        </header>
-
-        <div class="badge-editor">
-            <div class="badge-preview">
-                <img src="assets/badge.png" alt="Badge Technofoire" id="badge-template">
-                <div class="photo-zone" id="photo-zone">
-                    <img id="user-photo" alt="Votre photo">
-                    <div class="placeholder">+ Ajouter photo</div>
-                </div>
-            </div>
-
-            <div class="editor-controls">
-                <label for="file-input" class="upload-btn">
-                    📸 Choisir une photo
-                </label>
-                <input type="file" id="file-input" accept="image/*">
-                
-                <button id="download-btn" class="download-btn" disabled>
-                    ⬇️ Télécharger
-                </button>
-            </div>
-        </div>
+  <div class="container">
+    <div class="badge">
+      <img src="affiche.png" alt="Affiche" class="affiche" />
+      <div class="photo-zone">
+        <img id="user-photo" src="" alt="" />
+      </div>
     </div>
 
-    <script src="script.js"></script>
+    <input type="file" id="upload" accept="image/*" />
+    
+    <div id="crop-area">
+      <img id="cropper-image" />
+      <button id="confirm-crop">Valider la photo</button>
+    </div>
+
+    <button id="download">Télécharger</button>
+    <canvas id="final-canvas" style="display: none;"></canvas>
+  </div>
+
+  <script src="https://unpkg.com/cropperjs"></script>
+  <script src="script.js"></script>
 </body>
 </html>
