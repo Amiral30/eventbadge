@@ -8,24 +8,23 @@
 </head>
 <body>
     <div class="container">
-        <h1>Crée ton badge Technofoire</h1>
-        
         <div class="badge-editor">
-            <div class="badge-preview">
-                <img src="affiche.png" alt="Affiche Technofoire" id="badge-template">
-                <div class="photo-zone" id="photo-zone" style="clip-path: ellipse(40% 50%)">
-                    <img id="user-photo" alt="Photo utilisateur">
+            <!-- Affiche de fond avec zone photo intégrée -->
+            <div class="badge-template" id="badge-template">
+                <div class="photo-zone" id="photo-zone">
+                    <img id="user-photo" alt="Votre photo">
+                    <div class="placeholder">Clique pour ajouter ta photo</div>
                 </div>
             </div>
 
             <div class="controls">
                 <button id="upload-btn">Choisir une photo</button>
-                <button id="download-btn" disabled>Télécharger</button>
-                <input type="file" id="file-input" accept="image/*">
+                <button id="download-btn" disabled>Télécharger le badge</button>
             </div>
         </div>
     </div>
 
+    <input type="file" id="file-input" accept="image/*" style="display:none">
     <script src="script.js"></script>
 </body>
 </html>
